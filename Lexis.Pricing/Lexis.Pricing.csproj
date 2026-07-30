@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>Lexis.Pricing</RootNamespace>
+    <Description>Desktop-track option pricing (BSM European + CRR American). Copied from Mexem.Gateway; originals untouched.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Lexis.Contracts\Lexis.Contracts.csproj" />
+  </ItemGroup>
+</Project>

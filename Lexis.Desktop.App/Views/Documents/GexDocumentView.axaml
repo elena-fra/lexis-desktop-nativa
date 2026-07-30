@@ -1,0 +1,314 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Lexis.Desktop.App.ViewModels.Documents"
+             x:Class="Lexis.Desktop.App.Views.Documents.GexDocumentView"
+             x:DataType="vm:GexDocumentViewModel"
+             x:CompileBindings="False">
+
+  <UserControl.Styles>
+    <Style Selector="Button.seg">
+      <Setter Property="Padding" Value="10,5"/>
+      <Setter Property="FontSize" Value="11"/>
+      <Setter Property="Background" Value="#141018"/>
+      <Setter Property="Foreground" Value="#A89BA3"/>
+      <Setter Property="BorderBrush" Value="#2A2530"/>
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="CornerRadius" Value="0"/>
+      <Setter Property="Margin" Value="0,0,4,0"/>
+    </Style>
+    <Style Selector="Button.seg.on">
+      <Setter Property="Background" Value="#2A1E24"/>
+      <Setter Property="Foreground" Value="#D4A8B0"/>
+      <Setter Property="BorderBrush" Value="#D4A8B0"/>
+    </Style>
+    <Style Selector="TextBlock.hh">
+      <Setter Property="FontSize" Value="9"/>
+      <Setter Property="FontWeight" Value="Bold"/>
+      <Setter Property="Foreground" Value="#D4A8B0"/>
+      <Setter Property="LetterSpacing" Value="1"/>
+    </Style>
+    <Style Selector="TextBlock.kpi">
+      <Setter Property="FontFamily" Value="Consolas,Courier New,monospace"/>
+      <Setter Property="FontSize" Value="18"/>
+      <Setter Property="FontWeight" Value="Bold"/>
+      <Setter Property="Foreground" Value="#F3ECEF"/>
+    </Style>
+    <Style Selector="TextBlock.hint">
+      <Setter Property="FontSize" Value="10"/>
+      <Setter Property="Foreground" Value="#6A6068"/>
+      <Setter Property="Margin" Value="0,2,0,0"/>
+    </Style>
+    <Style Selector="TextBlock.cardk">
+      <Setter Property="FontSize" Value="9"/>
+      <Setter Property="FontWeight" Value="Bold"/>
+      <Setter Property="Foreground" Value="#D4A8B0"/>
+      <Setter Property="LetterSpacing" Value="1"/>
+    </Style>
+    <Style Selector="TextBlock.cardv">
+      <Setter Property="FontFamily" Value="Consolas,Courier New,monospace"/>
+      <Setter Property="FontSize" Value="16"/>
+      <Setter Property="FontWeight" Value="Bold"/>
+      <Setter Property="Foreground" Value="#F3ECEF"/>
+      <Setter Property="Margin" Value="0,4,0,0"/>
+    </Style>
+  </UserControl.Styles>
+
+  <DockPanel Background="#100E14">
+    <!-- Title -->
+    <Border DockPanel.Dock="Top" Padding="16,12" BorderBrush="#2A2530" BorderThickness="0,0,0,1">
+      <Grid ColumnDefinitions="*,Auto">
+        <StackPanel Orientation="Horizontal" Spacing="10">
+          <Ellipse Width="8" Height="8" Fill="#D4A8B0" VerticalAlignment="Center"/>
+          <TextBlock Text="Gamma Exposure" FontSize="18" FontWeight="SemiBold" Foreground="#F3ECEF"/>
+          <TextBlock Text="{Binding SelectedSymbol}" FontSize="16" FontWeight="SemiBold" Foreground="#D4A8B0" VerticalAlignment="Center"/>
+          <TextBlock Text="{Binding Subtitle}" FontSize="11" Foreground="#8A7F88" VerticalAlignment="Center"
+                     TextTrimming="CharacterEllipsis" MaxWidth="520"/>
+        </StackPanel>
+        <Button Grid.Column="1" Content="Reload" Command="{Binding ReloadCommand}" Padding="12,5"/>
+      </Grid>
+    </Border>
+
+    <!-- Controls: underlying + metric + method -->
+    <Border DockPanel.Dock="Top" Padding="12,10" BorderBrush="#2A2530" BorderThickness="0,0,0,1" Background="#141018">
+      <StackPanel Spacing="10">
+        <WrapPanel ItemHeight="32">
+          <TextBlock Text="SOTTOSTANTE" Classes="hh" VerticalAlignment="Center" Margin="0,0,8,0"/>
+          <Button Classes="seg" Content="SPX" Command="{Binding SetSymbolCommand}" CommandParameter="SPX"/>
+          <Button Classes="seg" Content="SPY" Command="{Binding SetSymbolCommand}" CommandParameter="SPY"/>
+          <Button Classes="seg" Content="QQQ" Command="{Binding SetSymbolCommand}" CommandParameter="QQQ"/>
+          <Button Classes="seg" Content="AAPL" Command="{Binding SetSymbolCommand}" CommandParameter="AAPL"/>
+          <Button Classes="seg" Content="TSLA" Command="{Binding SetSymbolCommand}" CommandParameter="TSLA"/>
+        </WrapPanel>
+
+        <WrapPanel ItemHeight="32">
+          <TextBlock Text="METRICA STRUTTURA" Classes="hh" VerticalAlignment="Center" Margin="0,0,8,0"/>
+          <Button Classes="seg" Classes.on="{Binding MetricGex}" Content="GEX" Command="{Binding SetMetricCommand}" CommandParameter="gex"/>
+          <Button Classes="seg" Classes.on="{Binding MetricDex}" Content="DEX" Command="{Binding SetMetricCommand}" CommandParameter="dex"/>
+          <Button Classes="seg" Classes.on="{Binding MetricCharma}" Content="Charma" Command="{Binding SetMetricCommand}" CommandParameter="charma"/>
+          <Button Classes="seg" Classes.on="{Binding MetricVanna}" Content="Vanna" Command="{Binding SetMetricCommand}" CommandParameter="vanna"/>
+          <Button Classes="seg" Classes.on="{Binding MetricSpeed}" Content="Speed" Command="{Binding SetMetricCommand}" CommandParameter="speed"/>
+          <Button Classes="seg" Classes.on="{Binding MetricVomma}" Content="Vomma" Command="{Binding SetMetricCommand}" CommandParameter="vomma"/>
+          <Button Classes="seg" Classes.on="{Binding MetricNet}" Content="Netta" Command="{Binding SetMetricCommand}" CommandParameter="net"/>
+        </WrapPanel>
+
+        <WrapPanel ItemHeight="32">
+          <TextBlock Text="METODO GEX" Classes="hh" VerticalAlignment="Center" Margin="0,0,8,0"/>
+          <Button Classes="seg" Classes.on="{Binding MethodBs}" Content="Black-Scholes" Command="{Binding SetMethodCommand}" CommandParameter="black-scholes"/>
+          <Button Classes="seg" Classes.on="{Binding MethodCrr}" Content="CRR" Command="{Binding SetMethodCommand}" CommandParameter="1"/>
+          <Button Classes="seg" Classes.on="{Binding MethodMc}" Content="Monte Carlo" Command="{Binding SetMethodCommand}" CommandParameter="2"/>
+          <Button Classes="seg" Classes.on="{Binding MethodHeston}" Content="Heston" Command="{Binding SetMethodCommand}" CommandParameter="4"/>
+          <Button Classes="seg" Classes.on="{Binding MethodFdm}" Content="FDM" Command="{Binding SetMethodCommand}" CommandParameter="6"/>
+        </WrapPanel>
+      </StackPanel>
+    </Border>
+
+    <!-- Section tabs (web parity) -->
+    <Border DockPanel.Dock="Top" Padding="12,8" BorderBrush="#2A2530" BorderThickness="0,0,0,1" Background="#121014">
+      <StackPanel Orientation="Horizontal" Spacing="0">
+        <TextBlock Text="SEZIONE" Classes="hh" VerticalAlignment="Center" Margin="0,0,10,0"/>
+        <Button Classes="seg" Classes.on="{Binding TabMacroOn}" Content="Macro" Command="{Binding SetTabCommand}" CommandParameter="macro"/>
+        <Button Classes="seg" Classes.on="{Binding TabStructOn}" Content="Strutturale" Command="{Binding SetTabCommand}" CommandParameter="struct"/>
+        <Button Classes="seg" Classes.on="{Binding TabLevelsOn}" Content="Livelli" Command="{Binding SetTabCommand}" CommandParameter="levels"/>
+        <Button Classes="seg" Classes.on="{Binding TabTermOn}" Content="Scadenze" Command="{Binding SetTabCommand}" CommandParameter="term"/>
+        <Button Classes="seg" Classes.on="{Binding TabDerivOn}" Content="Derivate" Command="{Binding SetTabCommand}" CommandParameter="deriv"/>
+        <Button Classes="seg" Classes.on="{Binding TabFlowOn}" Content="Flussi" Command="{Binding SetTabCommand}" CommandParameter="flow"/>
+      </StackPanel>
+    </Border>
+
+    <!-- Hero KPIs (always, like web macro hero) -->
+    <Border DockPanel.Dock="Top" Padding="14,12" BorderBrush="#2A2530" BorderThickness="0,0,0,1" Background="#121014">
+      <UniformGrid Rows="1" Columns="4">
+        <StackPanel Margin="0,0,16,0">
+          <TextBlock Classes="hh" Text="NET GEX"/>
+          <TextBlock Classes="kpi" Text="{Binding NetLabel}" Foreground="{Binding NetBrush}"/>
+          <TextBlock Classes="hint" Text="{Binding NetHint}"/>
+        </StackPanel>
+        <StackPanel Margin="0,0,16,0">
+          <TextBlock Classes="hh" Text="GAMMA FLIP"/>
+          <TextBlock Classes="kpi" Text="{Binding FlipLabel}" Foreground="#D4A8B0"/>
+          <TextBlock Classes="hint" Text="Γ da positivo a negativo"/>
+        </StackPanel>
+        <StackPanel Margin="0,0,16,0">
+          <TextBlock Classes="hh" Text="CALL / PUT"/>
+          <TextBlock Classes="kpi" Text="{Binding CallPutLabel}"/>
+          <TextBlock Classes="hint" Text="ratio gamma %"/>
+        </StackPanel>
+        <StackPanel>
+          <TextBlock Classes="hh" Text="Δ 24H"/>
+          <TextBlock Classes="kpi" Text="{Binding Delta24Label}" Foreground="{Binding DeltaBrush}"/>
+          <TextBlock Classes="hint" Text="vs chiusura precedente"/>
+        </StackPanel>
+      </UniformGrid>
+    </Border>
+
+    <TextBlock DockPanel.Dock="Bottom" Margin="12,6" FontSize="10" Foreground="#6A6068"
+               Text="{Binding TabNote}"/>
+
+    <!-- Body -->
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Background="#100E14">
+      <StackPanel>
+        <!-- Tab cards -->
+        <ItemsControl ItemsSource="{Binding TabCards}" Margin="12,12,12,0"
+                      IsVisible="{Binding !ShowProfileRows}">
+          <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+              <UniformGrid Columns="4"/>
+            </ItemsPanelTemplate>
+          </ItemsControl.ItemsPanel>
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <Border Margin="0,0,10,10" Padding="12,10" Background="#141018" BorderBrush="#2A2530" BorderThickness="1">
+                <StackPanel>
+                  <TextBlock Classes="cardk" Text="{Binding Title}"/>
+                  <TextBlock Classes="cardv" Text="{Binding Value}"/>
+                  <TextBlock Classes="hint" Text="{Binding Hint}"/>
+                </StackPanel>
+              </Border>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <!-- Levels tab also shows cards above profile -->
+        <ItemsControl ItemsSource="{Binding TabCards}" Margin="12,12,12,0"
+                      IsVisible="{Binding TabLevels}">
+          <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+              <UniformGrid Columns="4"/>
+            </ItemsPanelTemplate>
+          </ItemsControl.ItemsPanel>
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <Border Margin="0,0,10,10" Padding="12,10" Background="#141018" BorderBrush="#2A2530" BorderThickness="1">
+                <StackPanel>
+                  <TextBlock Classes="cardk" Text="{Binding Title}"/>
+                  <TextBlock Classes="cardv" Text="{Binding Value}"/>
+                  <TextBlock Classes="hint" Text="{Binding Hint}"/>
+                </StackPanel>
+              </Border>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <!-- Profile header -->
+        <Border Padding="12,10,12,6" IsVisible="{Binding ShowProfileRows}">
+          <TextBlock Text="{Binding PanelTitle}" FontSize="13" FontWeight="SemiBold" Foreground="#F3ECEF"/>
+        </Border>
+
+        <Border Padding="12,6" Background="#141018" BorderBrush="#2A2530" BorderThickness="0,1,0,1"
+                IsVisible="{Binding ShowProfileRows}">
+          <Grid ColumnDefinitions="72,*,72,56">
+            <TextBlock Classes="hh" Text="STRIKE" TextAlignment="Right"/>
+            <TextBlock Grid.Column="1" Classes="hh" Text="− EXPOSURE +" HorizontalAlignment="Center"/>
+            <TextBlock Grid.Column="2" Classes="hh" Text="VALUE" TextAlignment="Right"/>
+            <TextBlock Grid.Column="3" Classes="hh" Text="TAG" HorizontalAlignment="Center"/>
+          </Grid>
+        </Border>
+
+        <ItemsControl ItemsSource="{Binding Rows}" IsVisible="{Binding ShowProfileRows}">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <Border Background="{Binding RowBg}" BorderBrush="#1A1620" BorderThickness="0,0,0,1" Height="28" Padding="12,0">
+                <Grid ColumnDefinitions="72,*,72,56">
+                  <TextBlock Text="{Binding StrikeLabel}" FontFamily="Consolas,Courier New,monospace"
+                             FontSize="12" FontWeight="Bold" Foreground="{Binding StrikeFg}"
+                             TextAlignment="Right" VerticalAlignment="Center"/>
+                  <Grid Grid.Column="1" Margin="12,0" ColumnDefinitions="*,1,*">
+                    <Border Background="#0A080C">
+                      <Border HorizontalAlignment="Right" VerticalAlignment="Center" Height="12"
+                              Width="{Binding NegBar}" Background="#99EF4444" CornerRadius="0"/>
+                    </Border>
+                    <Border Grid.Column="1" Width="1" Background="#3A2A32" VerticalAlignment="Stretch" Margin="0,-4"/>
+                    <Border Grid.Column="2" Background="#0A080C">
+                      <Border HorizontalAlignment="Left" VerticalAlignment="Center" Height="12"
+                              Width="{Binding PosBar}" Background="#9922C55E" CornerRadius="0"/>
+                    </Border>
+                  </Grid>
+                  <TextBlock Grid.Column="2" Text="{Binding ValueLabel}" FontFamily="Consolas,Courier New,monospace"
+                             FontSize="12" FontWeight="Bold" Foreground="{Binding ValueFg}"
+                             TextAlignment="Right" VerticalAlignment="Center"/>
+                  <TextBlock Grid.Column="3" Text="{Binding TagLabel}" FontSize="9" FontWeight="Bold"
+                             Foreground="#D4A8B0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Grid>
+              </Border>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <!-- Flow tape -->
+        <Border Margin="12,4" Padding="12,10" Background="#141018" BorderBrush="#2A2530" BorderThickness="1"
+                IsVisible="{Binding TabFlow}">
+          <StackPanel>
+            <TextBlock Text="{Binding PanelTitle}" FontSize="13" FontWeight="SemiBold" Foreground="#F3ECEF" Margin="0,0,0,10"/>
+            <Grid ColumnDefinitions="*,80,80,70,70" Margin="0,0,0,6">
+              <TextBlock Classes="hh" Text="CONTRATTO"/>
+              <TextBlock Grid.Column="1" Classes="hh" Text="SCAD."/>
+              <TextBlock Grid.Column="2" Classes="hh" Text="PREMIO" TextAlignment="Right"/>
+              <TextBlock Grid.Column="3" Classes="hh" Text="LATO" HorizontalAlignment="Center"/>
+              <TextBlock Grid.Column="4" Classes="hh" Text="AGGR." HorizontalAlignment="Center"/>
+            </Grid>
+            <ItemsControl ItemsSource="{Binding FlowRows}">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                  <Grid ColumnDefinitions="*,80,80,70,70" Height="28">
+                    <TextBlock Text="{Binding Contract}" FontFamily="Consolas,Courier New,monospace" FontSize="12" Foreground="#E8DFE4" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Column="1" Text="{Binding Expiry}" FontSize="11" Foreground="#8A7F88" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Column="2" Text="{Binding Prem}" FontFamily="Consolas,Courier New,monospace" FontSize="12" Foreground="#D4A8B0" TextAlignment="Right" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Column="3" Text="{Binding Side}" FontSize="11" Foreground="#A89BA3" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Column="4" Text="{Binding Aggr}" FontSize="11" FontWeight="Bold" Foreground="#86EFAC" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                  </Grid>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </StackPanel>
+        </Border>
+
+        <Border Margin="12,4,12,12" Padding="12,10" Background="#141018" BorderBrush="#2A2530" BorderThickness="1"
+                IsVisible="{Binding TabFlow}">
+          <StackPanel>
+            <TextBlock Text="Squeeze Alert Engine" FontSize="13" FontWeight="SemiBold" Foreground="#F3ECEF" Margin="0,0,0,8"/>
+            <ItemsControl ItemsSource="{Binding Alerts}">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                  <Border Padding="0,6" BorderBrush="#1A1620" BorderThickness="0,0,0,1">
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                      <TextBlock Text="{Binding Time}" FontFamily="Consolas,Courier New,monospace" FontSize="11" Foreground="#D4A8B0" Width="72"/>
+                      <TextBlock Text="{Binding Message}" FontSize="12" Foreground="#C4B8BF" TextWrapping="Wrap"/>
+                    </StackPanel>
+                  </Border>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </StackPanel>
+        </Border>
+
+        <!-- Struct / term / deriv note when no profile -->
+        <Border Margin="12" Padding="14" Background="#141018" BorderBrush="#2A2530" BorderThickness="1"
+                IsVisible="{Binding TabStruct}">
+          <StackPanel>
+            <TextBlock Text="{Binding PanelTitle}" FontSize="13" FontWeight="SemiBold" Foreground="#F3ECEF"/>
+            <TextBlock Margin="0,8,0,0" FontSize="12" Foreground="#8A7F88" TextWrapping="Wrap"
+                       Text="Heatmap intraday e curva Γ vs spot: mock KPI sopra. Il profilo strike completo è in Macro / Livelli."/>
+          </StackPanel>
+        </Border>
+
+        <Border Margin="12" Padding="14" Background="#141018" BorderBrush="#2A2530" BorderThickness="1"
+                IsVisible="{Binding TabTerm}">
+          <StackPanel>
+            <TextBlock Text="{Binding PanelTitle}" FontSize="13" FontWeight="SemiBold" Foreground="#F3ECEF"/>
+            <TextBlock Margin="0,8,0,0" FontSize="12" Foreground="#8A7F88" TextWrapping="Wrap"
+                       Text="Forward curve peso gamma per scadenza (0DTE → monthly) — valori mock allineati al Lexis web."/>
+          </StackPanel>
+        </Border>
+
+        <Border Margin="12" Padding="14" Background="#141018" BorderBrush="#2A2530" BorderThickness="1"
+                IsVisible="{Binding TabDeriv}">
+          <StackPanel>
+            <TextBlock Text="{Binding PanelTitle}" FontSize="13" FontWeight="SemiBold" Foreground="#F3ECEF"/>
+            <TextBlock Margin="0,8,0,0" FontSize="12" Foreground="#8A7F88" TextWrapping="Wrap"
+                       Text="Vanna / Charm / Speed / Color come KPI. Cambia metrica in alto per il profilo strike dedicato."/>
+          </StackPanel>
+        </Border>
+      </StackPanel>
+    </ScrollViewer>
+  </DockPanel>
+</UserControl>

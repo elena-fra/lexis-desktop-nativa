@@ -1,0 +1,346 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Lexis.Desktop.App.ViewModels.Documents"
+             x:Class="Lexis.Desktop.App.Views.Documents.GrecheDocumentView"
+             x:DataType="vm:GrecheDocumentViewModel"
+             x:CompileBindings="False">
+
+  <UserControl.Styles>
+    <Style Selector="Button.seg">
+      <Setter Property="Padding" Value="10,5"/>
+      <Setter Property="FontSize" Value="11"/>
+      <Setter Property="Background" Value="#141018"/>
+      <Setter Property="Foreground" Value="#A89BA3"/>
+      <Setter Property="BorderBrush" Value="#2A2530"/>
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="CornerRadius" Value="0"/>
+      <Setter Property="Margin" Value="0,0,4,0"/>
+    </Style>
+    <Style Selector="Button.seg.on">
+      <Setter Property="Background" Value="#2A1E24"/>
+      <Setter Property="Foreground" Value="#D4A8B0"/>
+      <Setter Property="BorderBrush" Value="#D4A8B0"/>
+    </Style>
+    <Style Selector="TextBlock.hh">
+      <Setter Property="FontSize" Value="9"/>
+      <Setter Property="FontWeight" Value="Bold"/>
+      <Setter Property="Foreground" Value="#D4A8B0"/>
+      <Setter Property="LetterSpacing" Value="1"/>
+    </Style>
+    <Style Selector="TextBlock.cell">
+      <Setter Property="FontFamily" Value="Consolas,Courier New,monospace"/>
+      <Setter Property="FontSize" Value="12"/>
+      <Setter Property="VerticalAlignment" Value="Center"/>
+      <Setter Property="Foreground" Value="#E8DFE4"/>
+    </Style>
+    <Style Selector="CheckBox.col">
+      <Setter Property="Foreground" Value="#C4B8BF"/>
+      <Setter Property="FontSize" Value="12"/>
+      <Setter Property="Margin" Value="0,0,12,4"/>
+    </Style>
+  </UserControl.Styles>
+
+  <DockPanel Background="#100E14">
+    <Border DockPanel.Dock="Top" Padding="16,12" BorderBrush="#2A2530" BorderThickness="0,0,0,1">
+      <Grid ColumnDefinitions="*,Auto">
+        <StackPanel Orientation="Horizontal" Spacing="10">
+          <Ellipse Width="8" Height="8" Fill="#D4A8B0" VerticalAlignment="Center"/>
+          <TextBlock Text="Greche" FontSize="18" FontWeight="SemiBold" Foreground="#F3ECEF"/>
+          <TextBlock Text="{Binding SelectedSymbol}" FontSize="16" FontWeight="SemiBold" Foreground="#D4A8B0" VerticalAlignment="Center"/>
+          <TextBlock Text="{Binding Subtitle}" FontSize="11" Foreground="#8A7F88" VerticalAlignment="Center"
+                     TextTrimming="CharacterEllipsis" MaxWidth="560"/>
+        </StackPanel>
+        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6">
+          <Button Classes="seg" Content="Greche di posizione"
+                  Command="{Binding OpenPositionPanelCommand}"
+                  IsVisible="{Binding !ShowPositionPanel}"
+                  ToolTip.Tip="Riapri il pannello greche di posizione"/>
+          <Button Classes="seg" Classes.on="True" Content="Posizione"
+                  Command="{Binding TogglePositionPanelCommand}"
+                  IsVisible="{Binding ShowPositionPanel}"
+                  ToolTip.Tip="Nascondi greche di posizione"/>
+          <Button Content="Reload" Command="{Binding ReloadCommand}" Padding="12,5"/>
+        </StackPanel>
+      </Grid>
+    </Border>
+
+    <Border DockPanel.Dock="Top" Padding="12,10" BorderBrush="#2A2530" BorderThickness="0,0,0,1" Background="#141018">
+      <StackPanel Spacing="10">
+        <WrapPanel ItemHeight="32">
+          <TextBlock Text="SOTTOSTANTE" Classes="hh" VerticalAlignment="Center" Margin="0,0,8,0"/>
+          <Button Classes="seg" Content="SPX" Command="{Binding SetSymbolCommand}" CommandParameter="SPX"/>
+          <Button Classes="seg" Content="SPY" Command="{Binding SetSymbolCommand}" CommandParameter="SPY"/>
+          <Button Classes="seg" Content="QQQ" Command="{Binding SetSymbolCommand}" CommandParameter="QQQ"/>
+          <Button Classes="seg" Content="AAPL" Command="{Binding SetSymbolCommand}" CommandParameter="AAPL"/>
+          <Button Classes="seg" Content="TSLA" Command="{Binding SetSymbolCommand}" CommandParameter="TSLA"/>
+          <TextBlock Text="{Binding SpotLabel}" FontFamily="Consolas,Courier New,monospace" FontSize="12"
+                     Foreground="#8A7F88" VerticalAlignment="Center" Margin="8,0,0,0"/>
+        </WrapPanel>
+
+        <WrapPanel ItemHeight="32">
+          <TextBlock Text="SCADENZA" Classes="hh" VerticalAlignment="Center" Margin="0,0,8,0"/>
+          <ComboBox ItemsSource="{Binding ExpiryOptions}" SelectedItem="{Binding SelectedExpiry}"
+                    MinWidth="220" FontSize="12">
+            <ComboBox.ItemTemplate>
+              <DataTemplate>
+                <TextBlock>
+                  <TextBlock.Text>
+                    <MultiBinding StringFormat="{}{0} · {1}d · {2}">
+                      <Binding Path="L"/>
+                      <Binding Path="Dte"/>
+                      <Binding Path="T"/>
+                    </MultiBinding>
+                  </TextBlock.Text>
+                </TextBlock>
+              </DataTemplate>
+            </ComboBox.ItemTemplate>
+          </ComboBox>
+        </WrapPanel>
+
+        <WrapPanel ItemHeight="32">
+          <TextBlock Text="LATO" Classes="hh" VerticalAlignment="Center" Margin="0,0,8,0"/>
+          <Button Classes="seg" Classes.on="{Binding SideCall}" Content="CALL" Command="{Binding SetSideCommand}" CommandParameter="call"/>
+          <Button Classes="seg" Classes.on="{Binding SidePut}" Content="PUT" Command="{Binding SetSideCommand}" CommandParameter="put"/>
+
+          <TextBlock Text="STRIKE" Classes="hh" VerticalAlignment="Center" Margin="16,0,8,0"/>
+          <Button Classes="seg" Classes.on="{Binding Strike6}" Content="6" Command="{Binding SetStrikeCountCommand}" CommandParameter="6"/>
+          <Button Classes="seg" Classes.on="{Binding Strike12}" Content="12" Command="{Binding SetStrikeCountCommand}" CommandParameter="12"/>
+          <Button Classes="seg" Classes.on="{Binding Strike20}" Content="20" Command="{Binding SetStrikeCountCommand}" CommandParameter="20"/>
+          <Button Classes="seg" Classes.on="{Binding StrikeAll}" Content="Tutti" Command="{Binding SetStrikeCountCommand}" CommandParameter="all"/>
+
+          <TextBlock Text="VALORE" Classes="hh" VerticalAlignment="Center" Margin="16,0,8,0"/>
+          <Button Classes="seg" Classes.on="{Binding DisplayContract}" Content="Contratto" Command="{Binding SetDisplayCommand}" CommandParameter="contract"/>
+          <Button Classes="seg" Classes.on="{Binding DisplayMoney}" Content="€ Monetario" Command="{Binding SetDisplayCommand}" CommandParameter="money"/>
+        </WrapPanel>
+
+        <WrapPanel ItemHeight="32">
+          <TextBlock Text="HEATMAP" Classes="hh" VerticalAlignment="Center" Margin="0,0,8,0"/>
+          <Button Classes="seg" Classes.on="{Binding HeatOff}" Content="Off" Command="{Binding SetHeatCommand}" CommandParameter="none"/>
+          <Button Classes="seg" Classes.on="{Binding HeatDelta}" Content="Δ" Command="{Binding SetHeatCommand}" CommandParameter="delta"/>
+          <Button Classes="seg" Classes.on="{Binding HeatGamma}" Content="Γ" Command="{Binding SetHeatCommand}" CommandParameter="gamma"/>
+          <Button Classes="seg" Classes.on="{Binding HeatTheta}" Content="Θ" Command="{Binding SetHeatCommand}" CommandParameter="theta"/>
+          <Button Classes="seg" Classes.on="{Binding HeatVega}" Content="ν" Command="{Binding SetHeatCommand}" CommandParameter="vega"/>
+          <Button Classes="seg" Classes.on="{Binding HeatRho}" Content="ρ" Command="{Binding SetHeatCommand}" CommandParameter="rho"/>
+          <Button Classes="seg" Classes.on="{Binding HeatVanna}" Content="Vanna" Command="{Binding SetHeatCommand}" CommandParameter="vanna"/>
+          <Button Classes="seg" Classes.on="{Binding HeatCharm}" Content="Charm" Command="{Binding SetHeatCommand}" CommandParameter="charm"/>
+          <Button Classes="seg" Classes.on="{Binding HeatVomma}" Content="Vomma" Command="{Binding SetHeatCommand}" CommandParameter="vomma"/>
+
+          <TextBlock Text="COLONNE" Classes="hh" VerticalAlignment="Center" Margin="16,0,8,0"/>
+          <Button Classes="seg" Content="Greche ▾" Command="{Binding ToggleColumnsCommand}"/>
+        </WrapPanel>
+
+        <Border IsVisible="{Binding ColumnsOpen}" Padding="8" Background="#121014" BorderBrush="#2A2530" BorderThickness="1">
+          <WrapPanel>
+            <CheckBox Classes="col" Content="Δ Delta" IsChecked="{Binding ColDelta}"/>
+            <CheckBox Classes="col" Content="Γ Gamma" IsChecked="{Binding ColGamma}"/>
+            <CheckBox Classes="col" Content="Θ Theta" IsChecked="{Binding ColTheta}"/>
+            <CheckBox Classes="col" Content="ν Vega" IsChecked="{Binding ColVega}"/>
+            <CheckBox Classes="col" Content="ρ Rho" IsChecked="{Binding ColRho}"/>
+            <CheckBox Classes="col" Content="Vanna" IsChecked="{Binding ColVanna}"/>
+            <CheckBox Classes="col" Content="Charm" IsChecked="{Binding ColCharm}"/>
+            <CheckBox Classes="col" Content="Vomma" IsChecked="{Binding ColVomma}"/>
+          </WrapPanel>
+        </Border>
+      </StackPanel>
+    </Border>
+
+    <!-- Intensity map legend + strip -->
+    <Border DockPanel.Dock="Top" IsVisible="{Binding HeatLegendVisible}"
+            Padding="14,10" Background="#121014" BorderBrush="#2A2530" BorderThickness="0,0,0,1">
+      <StackPanel Spacing="8">
+        <Grid ColumnDefinitions="Auto,*,Auto">
+          <TextBlock Text="{Binding HeatLegendTitle}" FontSize="15" FontWeight="SemiBold" Foreground="#F3ECEF"
+                     VerticalAlignment="Center"/>
+          <StackPanel Grid.Column="1" Margin="16,0" VerticalAlignment="Center" MaxWidth="220">
+            <Grid Height="10" ColumnDefinitions="*,*,*">
+              <Border Background="{Binding HeatGradStart}"/>
+              <Border Grid.Column="1" Background="{Binding HeatGradMid}"/>
+              <Border Grid.Column="2" Background="{Binding HeatGradEnd}"/>
+            </Grid>
+            <Grid Margin="0,3,0,0" ColumnDefinitions="*,*">
+              <TextBlock Text="{Binding HeatLegendLo}" FontSize="10" Foreground="#6A6068"/>
+              <TextBlock Grid.Column="1" Text="{Binding HeatLegendHi}" FontSize="10" Foreground="#6A6068"
+                         HorizontalAlignment="Right"/>
+            </Grid>
+          </StackPanel>
+          <TextBlock Grid.Column="2" Text="{Binding HeatLegendNote}" FontSize="11" Foreground="#8A7F88"
+                     TextWrapping="Wrap" MaxWidth="360" VerticalAlignment="Center"/>
+        </Grid>
+
+        <StackPanel Spacing="4">
+          <TextBlock Text="HEATMAP · INTENSITÀ PER STRIKE" Classes="hh"/>
+          <ItemsControl ItemsSource="{Binding IntensityCells}">
+            <ItemsControl.ItemsPanel>
+              <ItemsPanelTemplate>
+                <UniformGrid Rows="1"/>
+              </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <Border Background="{Binding Fill}" Height="36" Margin="1,0"
+                        ToolTip.Tip="{Binding Tip}">
+                  <TextBlock Text="{Binding StrikeLabel}" FontSize="9"
+                             FontFamily="Consolas,Courier New,monospace"
+                             Foreground="#F3ECEF" HorizontalAlignment="Center" VerticalAlignment="Center"
+                             TextTrimming="CharacterEllipsis"/>
+                </Border>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </StackPanel>
+      </StackPanel>
+    </Border>
+
+    <!-- header -->
+    <Border DockPanel.Dock="Top" Padding="12,6" Background="#141018" BorderBrush="#2A2530" BorderThickness="0,0,0,1">
+      <Grid ColumnDefinitions="160,72,72,72,72,72,72,72,72,56">
+        <TextBlock Classes="hh" Text="STRIKE"/>
+        <TextBlock Grid.Column="1" Classes="hh" Text="Δ" IsVisible="{Binding ColDelta}"/>
+        <TextBlock Grid.Column="2" Classes="hh" Text="Γ" IsVisible="{Binding ColGamma}"/>
+        <TextBlock Grid.Column="3" Classes="hh" Text="Θ" IsVisible="{Binding ColTheta}"/>
+        <TextBlock Grid.Column="4" Classes="hh" Text="ν" IsVisible="{Binding ColVega}"/>
+        <TextBlock Grid.Column="5" Classes="hh" Text="ρ" IsVisible="{Binding ColRho}"/>
+        <TextBlock Grid.Column="6" Classes="hh" Text="VANNA" IsVisible="{Binding ColVanna}"/>
+        <TextBlock Grid.Column="7" Classes="hh" Text="CHARM" IsVisible="{Binding ColCharm}"/>
+        <TextBlock Grid.Column="8" Classes="hh" Text="VOMMA" IsVisible="{Binding ColVomma}"/>
+        <TextBlock Grid.Column="9" Classes="hh" Text="IV"/>
+      </Grid>
+    </Border>
+
+    <Grid ColumnDefinitions="*,Auto">
+      <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Background="#100E14">
+        <ItemsControl ItemsSource="{Binding Rows}">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <Border Background="{Binding RowBg}" BorderBrush="#1A1620" BorderThickness="0,0,0,1" Height="30" Padding="12,0">
+                <Grid ColumnDefinitions="160,72,72,72,72,72,72,72,72,56">
+                  <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                    <TextBlock Text="{Binding StrikeLabel}" Classes="cell" FontWeight="Bold" Foreground="#F3ECEF"/>
+                    <TextBlock Text="{Binding MnyLabel}" FontSize="9" Foreground="#6A6068" VerticalAlignment="Center"/>
+                  </StackPanel>
+                  <Border Grid.Column="1" Background="{Binding DeltaHeatBg}" IsVisible="{Binding ShowDelta}" Padding="4,0">
+                    <TextBlock Text="{Binding DeltaLabel}" Classes="cell" Foreground="{Binding DeltaFg}" HorizontalAlignment="Right"/>
+                  </Border>
+                  <Border Grid.Column="2" Background="{Binding GammaHeatBg}" IsVisible="{Binding ShowGamma}" Padding="4,0">
+                    <TextBlock Text="{Binding GammaLabel}" Classes="cell" HorizontalAlignment="Right"/>
+                  </Border>
+                  <Border Grid.Column="3" Background="{Binding ThetaHeatBg}" IsVisible="{Binding ShowTheta}" Padding="4,0">
+                    <TextBlock Text="{Binding ThetaLabel}" Classes="cell" Foreground="{Binding ThetaFg}" HorizontalAlignment="Right"/>
+                  </Border>
+                  <Border Grid.Column="4" Background="{Binding VegaHeatBg}" IsVisible="{Binding ShowVega}" Padding="4,0">
+                    <TextBlock Text="{Binding VegaLabel}" Classes="cell" HorizontalAlignment="Right"/>
+                  </Border>
+                  <Border Grid.Column="5" Background="{Binding RhoHeatBg}" IsVisible="{Binding ShowRho}" Padding="4,0">
+                    <TextBlock Text="{Binding RhoLabel}" Classes="cell" HorizontalAlignment="Right"/>
+                  </Border>
+                  <Border Grid.Column="6" Background="{Binding VannaHeatBg}" IsVisible="{Binding ShowVanna}" Padding="4,0">
+                    <TextBlock Text="{Binding VannaLabel}" Classes="cell" HorizontalAlignment="Right"/>
+                  </Border>
+                  <Border Grid.Column="7" Background="{Binding CharmHeatBg}" IsVisible="{Binding ShowCharm}" Padding="4,0">
+                    <TextBlock Text="{Binding CharmLabel}" Classes="cell" HorizontalAlignment="Right"/>
+                  </Border>
+                  <Border Grid.Column="8" Background="{Binding VommaHeatBg}" IsVisible="{Binding ShowVomma}" Padding="4,0">
+                    <TextBlock Text="{Binding VommaLabel}" Classes="cell" HorizontalAlignment="Right"/>
+                  </Border>
+                  <TextBlock Grid.Column="9" Text="{Binding IvLabel}" Classes="cell" Foreground="#D4A8B0" HorizontalAlignment="Right"/>
+                </Grid>
+              </Border>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </ScrollViewer>
+
+      <Border Grid.Column="1" Width="300" IsVisible="{Binding ShowPositionPanel}"
+              Background="#121014" BorderBrush="#2A2530" BorderThickness="1,0,0,0" Padding="14">
+        <DockPanel>
+          <Grid DockPanel.Dock="Top" ColumnDefinitions="*,Auto" Margin="0,0,0,10">
+            <TextBlock Text="{Binding PosTitle}" FontSize="13" FontWeight="SemiBold" Foreground="#F3ECEF"
+                       VerticalAlignment="Center" TextWrapping="Wrap"/>
+            <Button Grid.Column="1" Content="✕" Command="{Binding ClosePositionPanelCommand}"
+                    Padding="8,2" FontSize="12" ToolTip.Tip="Chiudi pannello"
+                    Background="Transparent" BorderThickness="0" Foreground="#8A7F88"/>
+          </Grid>
+
+          <StackPanel IsVisible="{Binding !HasPositions}">
+            <TextBlock Text="Nessuna posizione aperta." FontSize="12" Foreground="#8A7F88" TextWrapping="Wrap"/>
+            <TextBlock Margin="0,8,0,0" FontSize="11" Foreground="#6A6068" TextWrapping="Wrap"
+                       Text="Esegui un ordine dall'Option Chain per vedere le greche aggregate del portafoglio."/>
+          </StackPanel>
+
+          <ScrollViewer IsVisible="{Binding HasPositions}" VerticalScrollBarVisibility="Auto">
+            <StackPanel Spacing="10">
+              <UniformGrid Columns="2">
+                <StackPanel Margin="0,0,6,8">
+                  <TextBlock Classes="hh" Text="POSITION Δ"/>
+                  <TextBlock FontFamily="Consolas,Courier New,monospace" FontSize="16" FontWeight="Bold"
+                             Text="{Binding PosDeltaLabel}" Foreground="{Binding PosDeltaBrush}"/>
+                  <TextBlock Classes="hint" Text="per +1$ sottostante"/>
+                </StackPanel>
+                <StackPanel Margin="0,0,0,8">
+                  <TextBlock Classes="hh" Text="POSITION Γ"/>
+                  <TextBlock FontFamily="Consolas,Courier New,monospace" FontSize="16" FontWeight="Bold"
+                             Text="{Binding PosGammaLabel}" Foreground="{Binding PosGammaBrush}"/>
+                  <TextBlock Classes="hint" Text="long/short gamma"/>
+                </StackPanel>
+                <StackPanel Margin="0,0,6,8">
+                  <TextBlock Classes="hh" Text="POSITION Θ"/>
+                  <TextBlock FontFamily="Consolas,Courier New,monospace" FontSize="16" FontWeight="Bold"
+                             Text="{Binding PosThetaLabel}" Foreground="{Binding PosThetaBrush}"/>
+                  <TextBlock Classes="hint" Text="€ / giorno"/>
+                </StackPanel>
+                <StackPanel Margin="0,0,0,8">
+                  <TextBlock Classes="hh" Text="POSITION ν"/>
+                  <TextBlock FontFamily="Consolas,Courier New,monospace" FontSize="16" FontWeight="Bold"
+                             Text="{Binding PosVegaLabel}" Foreground="{Binding PosVegaBrush}"/>
+                  <TextBlock Classes="hint" Text="per +1% IV"/>
+                </StackPanel>
+              </UniformGrid>
+
+              <Border Background="#141018" BorderBrush="#2A2530" BorderThickness="1" Padding="10">
+                <StackPanel Spacing="4">
+                  <TextBlock Classes="hh" Text="β-WEIGHTED Δ → SPY"/>
+                  <TextBlock FontFamily="Consolas,Courier New,monospace" FontSize="18" FontWeight="Bold"
+                             Text="{Binding PosBwdLabel}" Foreground="{Binding PosBwdBrush}"/>
+                  <TextBlock Text="{Binding PosBwdHint}" FontSize="11" Foreground="#8A7F88" TextWrapping="Wrap"/>
+                </StackPanel>
+              </Border>
+
+              <Grid ColumnDefinitions="*,56,36,52,52" Margin="0,0,0,2">
+                <TextBlock Classes="hh" Text="STRUMENTO"/>
+                <TextBlock Grid.Column="1" Classes="hh" Text="LATO"/>
+                <TextBlock Grid.Column="2" Classes="hh" Text="QTY"/>
+                <TextBlock Grid.Column="3" Classes="hh" Text="Δ$"/>
+                <TextBlock Grid.Column="4" Classes="hh" Text="β-Δ"/>
+              </Grid>
+              <ItemsControl ItemsSource="{Binding PositionRows}">
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate>
+                    <Border BorderBrush="#1A1620" BorderThickness="0,0,0,1" Padding="0,5">
+                      <Grid ColumnDefinitions="*,56,36,52,52">
+                        <TextBlock Text="{Binding Instrument}" FontSize="11" Foreground="#F3ECEF" TextTrimming="CharacterEllipsis"/>
+                        <TextBlock Grid.Column="1" Text="{Binding Side}" FontSize="10" Foreground="{Binding SideBrush}"/>
+                        <TextBlock Grid.Column="2" Text="{Binding QtyLabel}" FontSize="11" FontFamily="Consolas,Courier New,monospace" Foreground="#E8DFE4"/>
+                        <TextBlock Grid.Column="3" Text="{Binding DeltaLabel}" FontSize="11" FontFamily="Consolas,Courier New,monospace" Foreground="{Binding DeltaBrush}"/>
+                        <TextBlock Grid.Column="4" Text="{Binding BwdLabel}" FontSize="11" FontFamily="Consolas,Courier New,monospace" Foreground="{Binding BwdBrush}"/>
+                      </Grid>
+                    </Border>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+
+              <TextBlock FontSize="10" Foreground="#6A6068" TextWrapping="Wrap"
+                         Text="Greche stimate con IV di catena / BSM. Il β-weighted delta converte ogni titolo in equivalente SPY."/>
+            </StackPanel>
+          </ScrollViewer>
+        </DockPanel>
+      </Border>
+
+      <Button Grid.Column="1" IsVisible="{Binding !ShowPositionPanel}"
+              Command="{Binding OpenPositionPanelCommand}"
+              Content="◀ Posizione"
+              VerticalAlignment="Top" HorizontalAlignment="Right"
+              Margin="8,12,8,0" Padding="10,6" Classes="seg"
+              ToolTip.Tip="Riapri greche di posizione"/>
+    </Grid>
+  </DockPanel>
+</UserControl>

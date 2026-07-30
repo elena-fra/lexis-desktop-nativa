@@ -1,0 +1,9 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>Lexis.Contracts</RootNamespace>
+    <Description>Frozen Lexis desktop data contracts — market DTOs + order-flow / IPC / OMS schemas. Parallel to web stack; originals untouched.</Description>
+  </PropertyGroup>
+</Project>

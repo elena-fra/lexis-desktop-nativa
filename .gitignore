@@ -1,0 +1,31 @@
+## Build
+**/bin/
+**/obj/
+**/build/
+**/out/
+**/publish/
+
+## IDE / OS
+.vs/
+.idea/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.DS_Store
+Thumbs.db
+
+## Logs
+*.log
+*.log.err
+*.log.out
+avalonia-run.log*
+
+## Native / CMake
+CMakeUserPresets.json
+CMakeCache.txt
+CMakeFiles/
+cmake-build-*/
+*.pdb
+*.ilk
+*.exp

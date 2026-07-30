@@ -1,0 +1,12 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Lexis.Desktop.App.ViewModels.Tools"
+             x:Class="Lexis.Desktop.App.Views.Tools.StatusToolView"
+             x:DataType="vm:StatusToolViewModel">
+    <Border Padding="16" Background="#0F172A">
+        <TextBlock Text="{Binding Summary}"
+                   TextWrapping="Wrap"
+                   Foreground="#CBD5E1"
+                   LineHeight="22" />
+    </Border>
+</UserControl>

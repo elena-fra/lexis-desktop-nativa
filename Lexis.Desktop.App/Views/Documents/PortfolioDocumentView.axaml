@@ -1,0 +1,273 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Lexis.Desktop.App.ViewModels.Documents"
+             x:Class="Lexis.Desktop.App.Views.Documents.PortfolioDocumentView"
+             x:DataType="vm:PortfolioDocumentViewModel"
+             x:CompileBindings="False">
+
+  <UserControl.Styles>
+    <Style Selector="Button.seg">
+      <Setter Property="Padding" Value="10,5"/>
+      <Setter Property="FontSize" Value="11"/>
+      <Setter Property="Background" Value="#141018"/>
+      <Setter Property="Foreground" Value="#A89BA3"/>
+      <Setter Property="BorderBrush" Value="#2A2530"/>
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="CornerRadius" Value="0"/>
+      <Setter Property="Margin" Value="0,0,4,0"/>
+    </Style>
+    <Style Selector="Button.seg.on">
+      <Setter Property="Background" Value="#2A1E24"/>
+      <Setter Property="Foreground" Value="#D4A8B0"/>
+      <Setter Property="BorderBrush" Value="#D4A8B0"/>
+    </Style>
+    <Style Selector="TextBlock.hh">
+      <Setter Property="FontSize" Value="9"/>
+      <Setter Property="FontWeight" Value="Bold"/>
+      <Setter Property="Foreground" Value="#D4A8B0"/>
+      <Setter Property="LetterSpacing" Value="1"/>
+    </Style>
+    <Style Selector="TextBlock.kpi">
+      <Setter Property="FontFamily" Value="Consolas,Courier New,monospace"/>
+      <Setter Property="FontSize" Value="18"/>
+      <Setter Property="FontWeight" Value="Bold"/>
+      <Setter Property="Foreground" Value="#F3ECEF"/>
+    </Style>
+    <Style Selector="TextBlock.hint">
+      <Setter Property="FontSize" Value="10"/>
+      <Setter Property="Foreground" Value="#6A6068"/>
+      <Setter Property="Margin" Value="0,2,0,0"/>
+    </Style>
+    <Style Selector="TextBlock.cardk">
+      <Setter Property="FontSize" Value="9"/>
+      <Setter Property="FontWeight" Value="Bold"/>
+      <Setter Property="Foreground" Value="#D4A8B0"/>
+      <Setter Property="LetterSpacing" Value="1"/>
+    </Style>
+    <Style Selector="TextBlock.th">
+      <Setter Property="FontSize" Value="10"/>
+      <Setter Property="FontWeight" Value="Bold"/>
+      <Setter Property="Foreground" Value="#8A7F88"/>
+    </Style>
+    <Style Selector="TextBlock.cell">
+      <Setter Property="FontFamily" Value="Consolas,Courier New,monospace"/>
+      <Setter Property="FontSize" Value="12"/>
+      <Setter Property="Foreground" Value="#E8DFE4"/>
+    </Style>
+  </UserControl.Styles>
+
+  <DockPanel Background="#100E14">
+    <Border DockPanel.Dock="Top" Padding="16,12" BorderBrush="#2A2530" BorderThickness="0,0,0,1">
+      <Grid ColumnDefinitions="*,Auto">
+        <StackPanel Orientation="Horizontal" Spacing="10">
+          <Ellipse Width="8" Height="8" Fill="#D4A8B0" VerticalAlignment="Center"/>
+          <TextBlock Text="Portafoglio" FontSize="18" FontWeight="SemiBold" Foreground="#F3ECEF"/>
+          <TextBlock Text="{Binding Subtitle}" FontSize="11" Foreground="#8A7F88" VerticalAlignment="Center"
+                     TextTrimming="CharacterEllipsis" MaxWidth="640"/>
+        </StackPanel>
+        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6">
+          <Button Classes="seg" Content="Posizioni →" Command="{Binding OpenPositionsCommand}"/>
+          <Button Classes="seg" Content="Greche →" Command="{Binding OpenGrecheCommand}"/>
+          <Button Content="Reload" Command="{Binding ReloadCommand}" Padding="12,5"/>
+        </StackPanel>
+      </Grid>
+    </Border>
+
+    <Border DockPanel.Dock="Top" Padding="12,10" Background="#141018" BorderBrush="#2A2530" BorderThickness="0,0,0,1">
+      <StackPanel Orientation="Horizontal" Spacing="8">
+        <TextBlock Text="CONTO" Classes="hh" VerticalAlignment="Center"/>
+        <Button Classes="seg" Classes.on="{Binding IsDemo}" Content="Demo" Command="{Binding SetAccountCommand}" CommandParameter="demo"/>
+        <Button Classes="seg" Classes.on="{Binding IsReal}" Content="Reale" Command="{Binding SetAccountCommand}" CommandParameter="real"/>
+        <TextBlock Text="RANGE" Classes="hh" VerticalAlignment="Center" Margin="16,0,0,0"/>
+        <Button Classes="seg" Classes.on="{Binding Range1G}" Content="1G" Command="{Binding SetRangeCommand}" CommandParameter="1G"/>
+        <Button Classes="seg" Classes.on="{Binding Range1S}" Content="1S" Command="{Binding SetRangeCommand}" CommandParameter="1S"/>
+        <Button Classes="seg" Classes.on="{Binding Range1M}" Content="1M" Command="{Binding SetRangeCommand}" CommandParameter="1M"/>
+        <Button Classes="seg" Classes.on="{Binding RangeYtd}" Content="YTD" Command="{Binding SetRangeCommand}" CommandParameter="YTD"/>
+      </StackPanel>
+    </Border>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+      <StackPanel Margin="14" Spacing="14">
+        <!-- KPI cards -->
+        <UniformGrid Columns="6">
+          <Border Margin="0,0,8,0" Padding="12,10" Background="#141018" BorderBrush="#2A2530" BorderThickness="1">
+            <StackPanel>
+              <TextBlock Classes="cardk" Text="NET LIQUIDATION"/>
+              <TextBlock Classes="kpi" Text="{Binding EquityLabel}"/>
+              <TextBlock Classes="hint" Text="valore netto del conto"/>
+            </StackPanel>
+          </Border>
+          <Border Margin="0,0,8,0" Padding="12,10" Background="#141018" BorderBrush="#2A2530" BorderThickness="1">
+            <StackPanel>
+              <TextBlock Classes="cardk" Text="BUYING POWER"/>
+              <TextBlock Classes="kpi" Text="{Binding BpLabel}" Foreground="{Binding BpBrush}"/>
+              <TextBlock Classes="hint" Text="potere d'acquisto residuo"/>
+            </StackPanel>
+          </Border>
+          <Border Margin="0,0,8,0" Padding="12,10" Background="#141018" BorderBrush="#2A2530" BorderThickness="1">
+            <StackPanel>
+              <TextBlock Classes="cardk" Text="LIQUIDITÀ"/>
+              <TextBlock Classes="kpi" Text="{Binding CashLabel}"/>
+              <TextBlock Classes="hint" Text="cash non investito"/>
+            </StackPanel>
+          </Border>
+          <Border Margin="0,0,8,0" Padding="12,10" Background="#141018" BorderBrush="#2A2530" BorderThickness="1">
+            <StackPanel>
+              <TextBlock Classes="cardk" Text="MARGINE"/>
+              <TextBlock Classes="kpi" Text="{Binding MarginLabel}" Foreground="#D4A8B0"/>
+              <TextBlock Classes="hint" Text="impegnato dalle posizioni"/>
+            </StackPanel>
+          </Border>
+          <Border Margin="0,0,8,0" Padding="12,10" Background="#141018" BorderBrush="#2A2530" BorderThickness="1">
+            <StackPanel>
+              <TextBlock Classes="cardk" Text="UTILIZZO"/>
+              <TextBlock Classes="kpi" Text="{Binding UtilLabel}" Foreground="{Binding UtilBrush}"/>
+              <TextBlock Classes="hint" Text="{Binding RiskLabel}"/>
+            </StackPanel>
+          </Border>
+          <Border Padding="12,10" Background="#141018" BorderBrush="#2A2530" BorderThickness="1">
+            <StackPanel>
+              <TextBlock Classes="cardk" Text="P&amp;L APERTO"/>
+              <TextBlock Classes="kpi" Text="{Binding OpenPlLabel}" Foreground="{Binding OpenPlBrush}"/>
+              <TextBlock Classes="hint" Text="non realizzato"/>
+            </StackPanel>
+          </Border>
+        </UniformGrid>
+
+        <!-- Equity curve -->
+        <Border Background="#141018" BorderBrush="#2A2530" BorderThickness="1" Padding="14">
+          <StackPanel Spacing="8">
+            <Grid ColumnDefinitions="*,Auto">
+              <TextBlock Text="Equity curve · crescita del conto" FontSize="14" FontWeight="SemiBold" Foreground="#F3ECEF"/>
+              <TextBlock Grid.Column="1" Text="{Binding CurveSub}" FontSize="11" Foreground="{Binding EquityBrush}"/>
+            </Grid>
+            <Border Height="150" Background="#0A080C" BorderBrush="#1A1620" BorderThickness="1" ClipToBounds="True">
+              <Viewbox Stretch="Fill">
+                <Canvas Width="640" Height="140">
+                  <Path Data="{Binding EquityPath}" Stroke="{Binding EquityBrush}" StrokeThickness="2.5"/>
+                </Canvas>
+              </Viewbox>
+            </Border>
+          </StackPanel>
+        </Border>
+
+        <!-- Risk metrics -->
+        <Border Background="#141018" BorderBrush="#2A2530" BorderThickness="1" Padding="14">
+          <StackPanel Spacing="10">
+            <TextBlock Text="Rischio aggregato di portafoglio" FontSize="14" FontWeight="SemiBold" Foreground="#F3ECEF"/>
+            <UniformGrid Columns="6">
+              <StackPanel Margin="0,0,8,0">
+                <TextBlock Classes="hh" Text="β-WEIGHTED Δ"/>
+                <TextBlock Classes="kpi" FontSize="16" Text="{Binding BwdLabel}"/>
+              </StackPanel>
+              <StackPanel Margin="0,0,8,0">
+                <TextBlock Classes="hh" Text="DELTA $"/>
+                <TextBlock Classes="kpi" FontSize="16" Text="{Binding DeltaDollarLabel}"/>
+              </StackPanel>
+              <StackPanel Margin="0,0,8,0">
+                <TextBlock Classes="hh" Text="GAMMA"/>
+                <TextBlock Classes="kpi" FontSize="16" Text="{Binding GammaLabel}"/>
+              </StackPanel>
+              <StackPanel Margin="0,0,8,0">
+                <TextBlock Classes="hh" Text="THETA / G"/>
+                <TextBlock Classes="kpi" FontSize="16" Text="{Binding ThetaLabel}"/>
+              </StackPanel>
+              <StackPanel Margin="0,0,8,0">
+                <TextBlock Classes="hh" Text="VEGA"/>
+                <TextBlock Classes="kpi" FontSize="16" Text="{Binding VegaLabel}"/>
+              </StackPanel>
+              <StackPanel>
+                <TextBlock Classes="hh" Text="ESP. LORDA"/>
+                <TextBlock Classes="kpi" FontSize="16" Text="{Binding GrossLabel}"/>
+              </StackPanel>
+            </UniformGrid>
+            <TextBlock Text="{Binding ScenarioLabel}" FontSize="11" Foreground="#8A7F88" TextWrapping="Wrap"/>
+          </StackPanel>
+        </Border>
+
+        <!-- Margin health -->
+        <Border Background="#141018" BorderBrush="#2A2530" BorderThickness="1" Padding="14">
+          <StackPanel Spacing="8">
+            <Grid ColumnDefinitions="*,Auto">
+              <TextBlock Text="Salute margini &amp; rischio margin call" FontSize="14" FontWeight="SemiBold" Foreground="#F3ECEF"/>
+              <TextBlock Grid.Column="1" Text="{Binding RiskLabel}" FontSize="11" FontWeight="Bold"
+                         Foreground="{Binding RiskBrush}"/>
+            </Grid>
+            <StackPanel Orientation="Horizontal" Height="14">
+              <Border Width="{Binding MarginUsedWidth}" Background="{Binding UtilBrush}"/>
+              <Border Width="{Binding MarginFreeWidth}" Background="#1A1620"/>
+            </StackPanel>
+            <TextBlock FontSize="11" Foreground="#6A6068"
+                       Text="{Binding MarginLabel, StringFormat=Margine usato {0}}" />
+          </StackPanel>
+        </Border>
+
+        <!-- β exposure table -->
+        <Border Background="#141018" BorderBrush="#2A2530" BorderThickness="1" Padding="14">
+          <StackPanel Spacing="8">
+            <TextBlock Text="Esposizione β-weighted per sottostante" FontSize="14" FontWeight="SemiBold" Foreground="#F3ECEF"/>
+            <Grid ColumnDefinitions="80,80,60,60,*,*,80" Margin="0,0,0,4">
+              <TextBlock Classes="th" Text="SOTTOSTANTE"/>
+              <TextBlock Grid.Column="1" Classes="th" Text="PREZZO"/>
+              <TextBlock Grid.Column="2" Classes="th" Text="BETA"/>
+              <TextBlock Grid.Column="3" Classes="th" Text="GAMBE"/>
+              <TextBlock Grid.Column="4" Classes="th" Text="DELTA $"/>
+              <TextBlock Grid.Column="5" Classes="th" Text="β-Δ"/>
+              <TextBlock Grid.Column="6" Classes="th" Text="% RISCHIO"/>
+            </Grid>
+            <ItemsControl ItemsSource="{Binding ExpoRows}">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                  <Border BorderBrush="#1A1620" BorderThickness="0,0,0,1" Padding="0,6">
+                    <Grid ColumnDefinitions="80,80,60,60,*,*,80">
+                      <TextBlock Text="{Binding Symbol}" Classes="cell" FontWeight="Bold" Foreground="#F3ECEF"/>
+                      <TextBlock Grid.Column="1" Text="{Binding SpotLabel}" Classes="cell"/>
+                      <TextBlock Grid.Column="2" Text="{Binding BetaLabel}" Classes="cell"/>
+                      <TextBlock Grid.Column="3" Text="{Binding LegsLabel}" Classes="cell"/>
+                      <TextBlock Grid.Column="4" Text="{Binding DeltaDollarLabel}" Classes="cell" Foreground="{Binding DeltaBrush}"/>
+                      <TextBlock Grid.Column="5" Text="{Binding BwdLabel}" Classes="cell" Foreground="{Binding BwdBrush}"/>
+                      <TextBlock Grid.Column="6" Text="{Binding RiskPctLabel}" Classes="cell"/>
+                    </Grid>
+                  </Border>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <TextBlock FontSize="11" Foreground="#6A6068" TextWrapping="Wrap" Margin="0,6,0,0"
+                       Text="Il β-weighted Δ converte ogni sottostante in delta equivalente SPX (beta × prezzo/SPY): standardizza il rischio direzionale dell'intero conto."/>
+          </StackPanel>
+        </Border>
+
+        <!-- Open legs -->
+        <Border Background="#141018" BorderBrush="#2A2530" BorderThickness="1" Padding="14">
+          <StackPanel Spacing="8">
+            <TextBlock Text="Posizioni aperte (gambe)" FontSize="14" FontWeight="SemiBold" Foreground="#F3ECEF"/>
+            <Grid ColumnDefinitions="*,80,50,*,80,80" Margin="0,0,0,4">
+              <TextBlock Classes="th" Text="STRUMENTO"/>
+              <TextBlock Grid.Column="1" Classes="th" Text="LATO"/>
+              <TextBlock Grid.Column="2" Classes="th" Text="QTY"/>
+              <TextBlock Grid.Column="3" Classes="th" Text="P&amp;L"/>
+              <TextBlock Grid.Column="4" Classes="th" Text="Δ$"/>
+              <TextBlock Grid.Column="5" Classes="th" Text="β-Δ"/>
+            </Grid>
+            <ItemsControl ItemsSource="{Binding PositionRows}">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                  <Border BorderBrush="#1A1620" BorderThickness="0,0,0,1" Padding="0,6">
+                    <Grid ColumnDefinitions="*,80,50,*,80,80">
+                      <TextBlock Text="{Binding Instrument}" Classes="cell" FontWeight="Bold" Foreground="#F3ECEF"/>
+                      <TextBlock Grid.Column="1" Text="{Binding Side}" Classes="cell" Foreground="{Binding SideBrush}"/>
+                      <TextBlock Grid.Column="2" Text="{Binding QtyLabel}" Classes="cell"/>
+                      <TextBlock Grid.Column="3" Text="{Binding PlLabel}" Classes="cell" Foreground="{Binding PlBrush}"/>
+                      <TextBlock Grid.Column="4" Text="{Binding DeltaLabel}" Classes="cell"/>
+                      <TextBlock Grid.Column="5" Text="{Binding BwdLabel}" Classes="cell"/>
+                    </Grid>
+                  </Border>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </StackPanel>
+        </Border>
+      </StackPanel>
+    </ScrollViewer>
+  </DockPanel>
+</UserControl>

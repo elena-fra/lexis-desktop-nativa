@@ -1,0 +1,358 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Lexis.Desktop.App.ViewModels.Documents"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="1400" d:DesignHeight="800"
+             x:Class="Lexis.Desktop.App.Views.Documents.OptionFlowDocumentView"
+             x:DataType="vm:OptionFlowDocumentViewModel"
+             x:CompileBindings="False">
+
+  <UserControl.Styles>
+    <Style Selector="Button.seg">
+      <Setter Property="Padding" Value="10,5"/>
+      <Setter Property="FontSize" Value="11"/>
+      <Setter Property="Background" Value="#141018"/>
+      <Setter Property="Foreground" Value="#A89BA3"/>
+      <Setter Property="BorderBrush" Value="#2A2530"/>
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="CornerRadius" Value="0"/>
+    </Style>
+    <Style Selector="Button.seg.on">
+      <Setter Property="Background" Value="#2A1E24"/>
+      <Setter Property="Foreground" Value="#D4A8B0"/>
+      <Setter Property="BorderBrush" Value="#D4A8B0"/>
+    </Style>
+    <Style Selector="TextBlock.kpi-l">
+      <Setter Property="FontSize" Value="9"/>
+      <Setter Property="Foreground" Value="#D4A8B0"/>
+      <Setter Property="FontWeight" Value="Bold"/>
+      <Setter Property="LetterSpacing" Value="1"/>
+    </Style>
+    <Style Selector="TextBlock.kpi-v">
+      <Setter Property="FontSize" Value="15"/>
+      <Setter Property="Foreground" Value="#F3ECEF"/>
+      <Setter Property="FontWeight" Value="SemiBold"/>
+      <Setter Property="FontFamily" Value="Consolas,Courier New,monospace"/>
+    </Style>
+    <Style Selector="TextBlock.ptitle">
+      <Setter Property="FontSize" Value="14"/>
+      <Setter Property="FontWeight" Value="SemiBold"/>
+      <Setter Property="Foreground" Value="#F3ECEF"/>
+      <Setter Property="Margin" Value="0,0,0,10"/>
+    </Style>
+    <Style Selector="TextBlock.cell">
+      <Setter Property="FontFamily" Value="Consolas,Courier New,monospace"/>
+      <Setter Property="FontSize" Value="12"/>
+      <Setter Property="Foreground" Value="#E8DFE4"/>
+      <Setter Property="VerticalAlignment" Value="Center"/>
+      <Setter Property="Margin" Value="0,0,12,0"/>
+    </Style>
+    <Style Selector="TextBlock.hh">
+      <Setter Property="FontSize" Value="9"/>
+      <Setter Property="Foreground" Value="#D4A8B0"/>
+      <Setter Property="FontWeight" Value="Bold"/>
+      <Setter Property="LetterSpacing" Value="1"/>
+      <Setter Property="Margin" Value="0,0,12,0"/>
+    </Style>
+    <Style Selector="Button.flowrow">
+      <Setter Property="Background" Value="Transparent"/>
+      <Setter Property="BorderThickness" Value="0,0,0,1"/>
+      <Setter Property="BorderBrush" Value="#1E1A22"/>
+      <Setter Property="CornerRadius" Value="0"/>
+      <Setter Property="Padding" Value="10,8"/>
+      <Setter Property="HorizontalAlignment" Value="Stretch"/>
+      <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+    </Style>
+  </UserControl.Styles>
+
+  <DockPanel Background="#100E14">
+    <Border DockPanel.Dock="Top" Padding="16,12" BorderBrush="#2A2530" BorderThickness="0,0,0,1">
+      <Grid ColumnDefinitions="*,Auto">
+        <StackPanel Orientation="Horizontal" Spacing="10">
+          <Ellipse Width="8" Height="8" Fill="#D4A8B0" VerticalAlignment="Center"/>
+          <TextBlock Text="Option Flow" FontSize="18" FontWeight="SemiBold" Foreground="#F3ECEF"/>
+          <TextBlock Text="{Binding StatusText}" FontSize="12" Foreground="#8A7F88" VerticalAlignment="Center"/>
+        </StackPanel>
+        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+          <Button Content="Reload" Command="{Binding ReloadCommand}" Padding="12,5"/>
+          <Button Content="{Binding LiveBadge}" Command="{Binding TogglePauseCommand}" Padding="12,5"
+                  Background="#1A1520" Foreground="#D4A8B0" BorderBrush="#3A2A32" BorderThickness="1"/>
+        </StackPanel>
+      </Grid>
+    </Border>
+
+    <Border DockPanel.Dock="Top" Padding="12,10" BorderBrush="#2A2530" BorderThickness="0,0,0,1" Background="#141018">
+      <WrapPanel ItemHeight="56">
+        <StackPanel Margin="0,0,14,8" Spacing="4">
+          <TextBlock Text="PREMIO MIN" FontSize="9" Foreground="#D4A8B0" FontWeight="Bold" LetterSpacing="1"/>
+          <StackPanel Orientation="Horizontal">
+            <Button Classes="seg" Classes.on="{Binding Min10k}" Content="≥10K" Command="{Binding SetMinPremCommand}" CommandParameter="10000"/>
+            <Button Classes="seg" Classes.on="{Binding Min50k}" Content="≥50K" Command="{Binding SetMinPremCommand}" CommandParameter="50000"/>
+            <Button Classes="seg" Classes.on="{Binding Min100k}" Content="≥100K" Command="{Binding SetMinPremCommand}" CommandParameter="100000"/>
+            <Button Classes="seg" Classes.on="{Binding Min1m}" Content="≥1M" Command="{Binding SetMinPremCommand}" CommandParameter="1000000"/>
+          </StackPanel>
+        </StackPanel>
+        <StackPanel Margin="0,0,14,8" Spacing="4">
+          <TextBlock Text="SENTIMENT" FontSize="9" Foreground="#D4A8B0" FontWeight="Bold" LetterSpacing="1"/>
+          <StackPanel Orientation="Horizontal">
+            <Button Classes="seg" Classes.on="{Binding SentAll}" Content="Tutti" Command="{Binding SetSentimentCommand}" CommandParameter="all"/>
+            <Button Classes="seg" Classes.on="{Binding SentBullOn}" Content="Bullish" Command="{Binding SetSentimentCommand}" CommandParameter="bullish"/>
+            <Button Classes="seg" Classes.on="{Binding SentBearOn}" Content="Bearish" Command="{Binding SetSentimentCommand}" CommandParameter="bearish"/>
+            <Button Classes="seg" Classes.on="{Binding SentNeutOn}" Content="Neutro" Command="{Binding SetSentimentCommand}" CommandParameter="neutral"/>
+          </StackPanel>
+        </StackPanel>
+        <StackPanel Margin="0,0,14,8" Spacing="4">
+          <TextBlock Text="MONEYNESS" FontSize="9" Foreground="#D4A8B0" FontWeight="Bold" LetterSpacing="1"/>
+          <StackPanel Orientation="Horizontal">
+            <Button Classes="seg" Classes.on="{Binding MoneyAll}" Content="Tutti" Command="{Binding SetMoneynessCommand}" CommandParameter="all"/>
+            <Button Classes="seg" Classes.on="{Binding MoneyItm}" Content="ITM" Command="{Binding SetMoneynessCommand}" CommandParameter="itm"/>
+            <Button Classes="seg" Classes.on="{Binding MoneyOtm}" Content="OTM" Command="{Binding SetMoneynessCommand}" CommandParameter="otm"/>
+          </StackPanel>
+        </StackPanel>
+        <StackPanel Margin="0,0,14,8" Spacing="4">
+          <TextBlock Text="SCADENZA" FontSize="9" Foreground="#D4A8B0" FontWeight="Bold" LetterSpacing="1"/>
+          <StackPanel Orientation="Horizontal">
+            <Button Classes="seg" Classes.on="{Binding DteAll}" Content="Tutti" Command="{Binding SetDteFilterCommand}" CommandParameter="all"/>
+            <Button Classes="seg" Classes.on="{Binding Dte0}" Content="0DTE" Command="{Binding SetDteFilterCommand}" CommandParameter="0"/>
+            <Button Classes="seg" Classes.on="{Binding DteWeek}" Content="≤7g" Command="{Binding SetDteFilterCommand}" CommandParameter="week"/>
+            <Button Classes="seg" Classes.on="{Binding DteLeaps}" Content="LEAPS" Command="{Binding SetDteFilterCommand}" CommandParameter="leaps"/>
+          </StackPanel>
+        </StackPanel>
+        <StackPanel Margin="0,0,14,8" Spacing="4">
+          <TextBlock Text="TICKER" FontSize="9" Foreground="#D4A8B0" FontWeight="Bold" LetterSpacing="1"/>
+          <StackPanel Orientation="Horizontal">
+            <Button Classes="seg" Content="SPY" Command="{Binding ToggleTickerCommand}" CommandParameter="SPY"/>
+            <Button Classes="seg" Content="QQQ" Command="{Binding ToggleTickerCommand}" CommandParameter="QQQ"/>
+            <Button Classes="seg" Content="AAPL" Command="{Binding ToggleTickerCommand}" CommandParameter="AAPL"/>
+            <Button Classes="seg" Content="TSLA" Command="{Binding ToggleTickerCommand}" CommandParameter="TSLA"/>
+            <Button Classes="seg" Content="SPX" Command="{Binding ToggleTickerCommand}" CommandParameter="SPX"/>
+            <Button Classes="seg" Content="Tutti" Command="{Binding ClearTickersCommand}"/>
+          </StackPanel>
+        </StackPanel>
+        <StackPanel Margin="0,0,0,8" VerticalAlignment="Bottom">
+          <Button Content="🏆 Solo Golden" Command="{Binding ToggleGoldenCommand}" Classes="seg" Classes.on="{Binding GoldenOnly}" Padding="12,6"/>
+        </StackPanel>
+      </WrapPanel>
+    </Border>
+
+    <Border DockPanel.Dock="Top" BorderBrush="#2A2530" BorderThickness="0,0,0,1" Background="#121014">
+      <UniformGrid Rows="1" Columns="8">
+        <StackPanel Margin="14,10" Spacing="2">
+          <TextBlock Classes="kpi-l" Text="PREMIO FILTRATO"/>
+          <TextBlock Classes="kpi-v" Text="{Binding KpiPremium}"/>
+        </StackPanel>
+        <StackPanel Margin="14,10" Spacing="2">
+          <TextBlock Classes="kpi-l" Text="CALL/PUT"/>
+          <TextBlock Classes="kpi-v" Text="{Binding KpiCallPut}"/>
+        </StackPanel>
+        <StackPanel Margin="14,10" Spacing="2">
+          <TextBlock Classes="kpi-l" Text="BULLISH"/>
+          <TextBlock Classes="kpi-v" Text="{Binding KpiBullish}" Foreground="#86EFAC"/>
+        </StackPanel>
+        <StackPanel Margin="14,10" Spacing="2">
+          <TextBlock Classes="kpi-l" Text="BEARISH"/>
+          <TextBlock Classes="kpi-v" Text="{Binding KpiBearish}" Foreground="#FCA5A5"/>
+        </StackPanel>
+        <StackPanel Margin="14,10" Spacing="2">
+          <TextBlock Classes="kpi-l" Text="SWEEPS"/>
+          <TextBlock Classes="kpi-v" Text="{Binding KpiSweeps}"/>
+        </StackPanel>
+        <StackPanel Margin="14,10" Spacing="2">
+          <TextBlock Classes="kpi-l" Text="BLOCKS"/>
+          <TextBlock Classes="kpi-v" Text="{Binding KpiBlocks}"/>
+        </StackPanel>
+        <StackPanel Margin="14,10" Spacing="2">
+          <TextBlock Classes="kpi-l" Text="GOLDEN"/>
+          <TextBlock Classes="kpi-v" Text="{Binding KpiGolden}" Foreground="#D4A8B0"/>
+        </StackPanel>
+        <StackPanel Margin="14,10" Spacing="2">
+          <TextBlock Classes="kpi-l" Text="RIGHE"/>
+          <TextBlock Classes="kpi-v" Text="{Binding KpiRows}"/>
+        </StackPanel>
+      </UniformGrid>
+    </Border>
+
+    <Grid ColumnDefinitions="*,320">
+      <!-- FEED: fixed-width cells so nothing collapses to “solo strike” -->
+      <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                    VerticalScrollBarVisibility="Auto"
+                    Background="#100E14">
+        <DockPanel MinWidth="1100">
+          <Border DockPanel.Dock="Top" Background="#141018" Padding="12,8" BorderBrush="#2A2530" BorderThickness="0,0,0,1">
+            <StackPanel Orientation="Horizontal">
+              <TextBlock Classes="hh" Width="70" Text="ORA"/>
+              <TextBlock Classes="hh" Width="64" Text="TICKER"/>
+              <TextBlock Classes="hh" Width="70" Text="SPOT" TextAlignment="Right"/>
+              <TextBlock Classes="hh" Width="90" Text="SCADENZA"/>
+              <TextBlock Classes="hh" Width="70" Text="STRIKE" TextAlignment="Right"/>
+              <TextBlock Classes="hh" Width="36" Text="C/P" TextAlignment="Center"/>
+              <TextBlock Classes="hh" Width="100" Text="SIZE / OI" TextAlignment="Right"/>
+              <TextBlock Classes="hh" Width="80" Text="PREMIO" TextAlignment="Right"/>
+              <TextBlock Classes="hh" Width="220" Text="ESECUZIONE"/>
+              <TextBlock Classes="hh" Width="80" Text="DIR."/>
+            </StackPanel>
+          </Border>
+
+          <ItemsControl ItemsSource="{Binding Rows}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <Button Classes="flowrow" Background="{Binding RowBg}" Cursor="Hand" MinWidth="1100"
+                        Tag="{Binding}" Click="OnFlowRowClick">
+                  <DockPanel>
+                    <Border DockPanel.Dock="Left" Width="3" Background="{Binding RowAccent}" Margin="0,0,10,0"/>
+                    <StackPanel Orientation="Horizontal">
+                      <TextBlock Classes="cell" Width="70" Text="{Binding Timestamp}"/>
+                      <TextBlock Classes="cell" Width="64" Text="{Binding Ticker}" FontWeight="Bold" Foreground="#F3ECEF"/>
+                      <TextBlock Classes="cell" Width="70" Text="{Binding SpotLabel}" TextAlignment="Right" Foreground="#A89BA3"/>
+                      <TextBlock Classes="cell" Width="90" Text="{Binding ExpDte}"/>
+                      <TextBlock Classes="cell" Width="70" Text="{Binding StrikeLabel}" TextAlignment="Right" FontWeight="Bold" Foreground="#F3ECEF"/>
+                      <TextBlock Classes="cell" Width="36" Text="{Binding Cp}" TextAlignment="Center" FontWeight="Bold" Foreground="{Binding CpBrush}"/>
+                      <TextBlock Classes="cell" Width="100" Text="{Binding SizeOi}" TextAlignment="Right"/>
+                      <TextBlock Classes="cell" Width="80" Text="{Binding PremLabel}" TextAlignment="Right" FontWeight="Bold" Foreground="#D4A8B0"/>
+                      <TextBlock Classes="cell" Width="220" Text="{Binding ExecLine}" Foreground="#D4A8B0"/>
+                      <TextBlock Classes="cell" Width="80" Text="{Binding DirLabel}" Foreground="{Binding RowAccent}"/>
+                    </StackPanel>
+                  </DockPanel>
+                </Button>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </DockPanel>
+      </ScrollViewer>
+
+      <!-- Rail -->
+      <ScrollViewer Grid.Column="1" Background="#121014" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel>
+          <Border Padding="16" BorderBrush="#2A2530" BorderThickness="0,0,0,1">
+            <StackPanel>
+              <TextBlock Classes="ptitle" Text="Sentiment"/>
+
+              <!-- Contachilometri (web .of-gauge) -->
+              <Viewbox MaxWidth="260" Stretch="Uniform" HorizontalAlignment="Center" Margin="0,4,0,0">
+                <Canvas Width="200" Height="128" ClipToBounds="False">
+                  <!-- Track + gradient arc -->
+                  <Path Data="M12,100 A88,88 0 0 1 188,100"
+                        Stroke="#F24A424C" StrokeThickness="14" Fill="Transparent"/>
+                  <Path Data="M12,100 A88,88 0 0 1 188,100"
+                        StrokeThickness="10" Fill="Transparent" Opacity="0.92">
+                    <Path.Stroke>
+                      <LinearGradientBrush StartPoint="0%,50%" EndPoint="100%,50%">
+                        <GradientStop Color="#D4847A" Offset="0"/>
+                        <GradientStop Color="#D4A8B0" Offset="0.48"/>
+                        <GradientStop Color="#8FBF9A" Offset="1"/>
+                      </LinearGradientBrush>
+                    </Path.Stroke>
+                  </Path>
+                  <Path Data="M20,100 A80,80 0 0 1 180,100"
+                        Stroke="#8C100E14" StrokeThickness="2" Fill="Transparent"/>
+
+                  <!-- Ticks (same as web) -->
+                  <Line StartPoint="22,100" EndPoint="12,100" Stroke="#8CF3ECEF" StrokeThickness="1.4"/>
+                  <Line StartPoint="22.0,74.7" EndPoint="16.3,72.8" Stroke="#47B0A6AD" StrokeThickness="1"/>
+                  <Line StartPoint="33.7,51.8" EndPoint="28.8,48.3" Stroke="#47B0A6AD" StrokeThickness="1"/>
+                  <Line StartPoint="51.8,33.7" EndPoint="48.3,28.8" Stroke="#47B0A6AD" StrokeThickness="1"/>
+                  <Line StartPoint="74.7,22.0" EndPoint="72.8,16.3" Stroke="#47B0A6AD" StrokeThickness="1"/>
+                  <Line StartPoint="100,22" EndPoint="100,12" Stroke="#8CF3ECEF" StrokeThickness="1.4"/>
+                  <Line StartPoint="125.3,22.0" EndPoint="127.2,16.3" Stroke="#47B0A6AD" StrokeThickness="1"/>
+                  <Line StartPoint="148.2,33.7" EndPoint="151.7,28.8" Stroke="#47B0A6AD" StrokeThickness="1"/>
+                  <Line StartPoint="166.3,51.8" EndPoint="171.2,48.3" Stroke="#47B0A6AD" StrokeThickness="1"/>
+                  <Line StartPoint="178.0,74.7" EndPoint="183.7,72.8" Stroke="#47B0A6AD" StrokeThickness="1"/>
+                  <Line StartPoint="178,100" EndPoint="188,100" Stroke="#8CF3ECEF" StrokeThickness="1.4"/>
+
+                  <!-- Needle -->
+                  <Canvas>
+                    <Canvas.RenderTransform>
+                      <RotateTransform Angle="{Binding NeedleAngle}" CenterX="100" CenterY="100"/>
+                    </Canvas.RenderTransform>
+                    <Polygon Points="100,22 96.2,100 100,106 103.8,100" Fill="#F3ECEF"/>
+                    <Polygon Points="100,22 100,106 103.8,100" Fill="#D4A8B0" Opacity="0.85"/>
+                  </Canvas>
+
+                  <!-- Hub -->
+                  <Ellipse Canvas.Left="93" Canvas.Top="93" Width="14" Height="14"
+                           Fill="#2A252E" Stroke="#D4A8B0" StrokeThickness="1.5"/>
+                  <Ellipse Canvas.Left="97.4" Canvas.Top="97.4" Width="5.2" Height="5.2" Fill="#D4A8B0"/>
+
+                  <TextBlock Canvas.Left="14" Canvas.Top="112" Text="BEAR" FontSize="9"
+                             FontFamily="Consolas,Courier New,monospace" FontWeight="Bold" Foreground="#D4847A"/>
+                  <TextBlock Canvas.Left="78" Canvas.Top="112" Width="44" Text="NEUTRO" FontSize="9"
+                             FontFamily="Consolas,Courier New,monospace" FontWeight="Bold" Foreground="#D4A8B0"
+                             TextAlignment="Center"/>
+                  <TextBlock Canvas.Left="154" Canvas.Top="112" Width="36" Text="BULL" FontSize="9"
+                             FontFamily="Consolas,Courier New,monospace" FontWeight="Bold" Foreground="#8FBF9A"
+                             TextAlignment="Right"/>
+                </Canvas>
+              </Viewbox>
+
+              <TextBlock Text="{Binding SentimentLabel}" FontSize="18" FontWeight="Bold"
+                         FontFamily="Consolas,Courier New,monospace"
+                         Foreground="{Binding SentimentBrush}"
+                         HorizontalAlignment="Center" Margin="0,6,0,0"/>
+              <TextBlock Text="{Binding SentimentScore}" FontSize="10"
+                         FontFamily="Consolas,Courier New,monospace"
+                         Foreground="#D4A8B0" FontWeight="Bold" LetterSpacing="1"
+                         HorizontalAlignment="Center" Margin="0,3,0,0"/>
+
+              <Grid ColumnDefinitions="*,*,*" Margin="0,10,0,0">
+                <StackPanel>
+                  <TextBlock Text="BEARISH" FontSize="8.5" Foreground="#D4A8B0" FontWeight="Bold" LetterSpacing="1"/>
+                  <TextBlock Text="{Binding SentBear}" FontSize="16" FontFamily="Consolas,Courier New,monospace"
+                             Foreground="#FCA5A5" FontWeight="Bold"/>
+                </StackPanel>
+                <StackPanel HorizontalAlignment="Center">
+                  <TextBlock Text="NEUTRO" FontSize="8.5" Foreground="#D4A8B0" FontWeight="Bold" LetterSpacing="1" HorizontalAlignment="Center"/>
+                  <TextBlock Text="{Binding SentNeut}" FontSize="16" FontFamily="Consolas,Courier New,monospace"
+                             Foreground="#D4A8B0" FontWeight="Bold" HorizontalAlignment="Center"/>
+                </StackPanel>
+                <StackPanel HorizontalAlignment="Right">
+                  <TextBlock Text="BULLISH" FontSize="8.5" Foreground="#D4A8B0" FontWeight="Bold" LetterSpacing="1" HorizontalAlignment="Right"/>
+                  <TextBlock Text="{Binding SentBull}" FontSize="16" FontFamily="Consolas,Courier New,monospace"
+                             Foreground="#86EFAC" FontWeight="Bold" HorizontalAlignment="Right"/>
+                </StackPanel>
+              </Grid>
+            </StackPanel>
+          </Border>
+
+          <Border Padding="16" BorderBrush="#2A2530" BorderThickness="0,0,0,1">
+            <StackPanel>
+              <TextBlock Classes="ptitle" Text="Concentrazione strike"/>
+              <ItemsControl ItemsSource="{Binding HeatStrikes}">
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate>
+                    <Grid ColumnDefinitions="56,*,40,40" Margin="0,0,0,8">
+                      <TextBlock Text="{Binding Label}" FontFamily="Consolas,Courier New,monospace" Foreground="#D4A8B0"/>
+                      <TextBlock Grid.Column="1" Text="{Binding Bar}" Foreground="#D4A8B0" Opacity="0.65" Margin="8,0"/>
+                      <TextBlock Grid.Column="2" Text="{Binding Call}" Foreground="#86EFAC" HorizontalAlignment="Right"/>
+                      <TextBlock Grid.Column="3" Text="{Binding Put}" Foreground="#FCA5A5" HorizontalAlignment="Right"/>
+                    </Grid>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+            </StackPanel>
+          </Border>
+
+          <Border Padding="16">
+            <StackPanel>
+              <TextBlock Classes="ptitle" Text="🏆 Golden Sweeps"/>
+              <ItemsControl ItemsSource="{Binding GoldenRows}" IsVisible="{Binding HasGolden}">
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate>
+                    <Border Background="#1A1520" Padding="10,8" Margin="0,0,0,6" BorderBrush="#3A2A32" BorderThickness="1">
+                      <Grid ColumnDefinitions="*,Auto">
+                        <TextBlock Text="{Binding Line}" FontFamily="Consolas,Courier New,monospace" Foreground="#F3ECEF"/>
+                        <TextBlock Grid.Column="1" Text="{Binding PremLabel}" FontWeight="Bold" Foreground="#D4A8B0"/>
+                      </Grid>
+                    </Border>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+              <TextBlock Text="Nessun golden nello schermo filtrato" Foreground="#8A7F88" FontSize="11"
+                         IsVisible="{Binding !HasGolden}"/>
+            </StackPanel>
+          </Border>
+        </StackPanel>
+      </ScrollViewer>
+    </Grid>
+  </DockPanel>
+</UserControl>

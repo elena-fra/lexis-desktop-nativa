@@ -1,0 +1,183 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Lexis.Desktop.App.ViewModels.Tools"
+             x:Class="Lexis.Desktop.App.Views.Tools.DomLadderToolView"
+             x:DataType="vm:DomLadderToolViewModel"
+             x:CompileBindings="False">
+
+  <UserControl.Styles>
+    <Style Selector="Button.seg">
+      <Setter Property="Padding" Value="8,4"/>
+      <Setter Property="FontSize" Value="11"/>
+      <Setter Property="Background" Value="#141018"/>
+      <Setter Property="Foreground" Value="#A89BA3"/>
+      <Setter Property="BorderBrush" Value="#2A2530"/>
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="CornerRadius" Value="0"/>
+      <Setter Property="Margin" Value="0,0,4,0"/>
+    </Style>
+    <Style Selector="Button.seg.on">
+      <Setter Property="Background" Value="#2A1E24"/>
+      <Setter Property="Foreground" Value="#D4A8B0"/>
+      <Setter Property="BorderBrush" Value="#D4A8B0"/>
+    </Style>
+    <Style Selector="Button.cell">
+      <Setter Property="Padding" Value="4,2"/>
+      <Setter Property="Background" Value="Transparent"/>
+      <Setter Property="BorderThickness" Value="0"/>
+      <Setter Property="CornerRadius" Value="0"/>
+      <Setter Property="HorizontalAlignment" Value="Stretch"/>
+      <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+    </Style>
+    <Style Selector="TextBlock.hh">
+      <Setter Property="FontSize" Value="9"/>
+      <Setter Property="FontWeight" Value="Bold"/>
+      <Setter Property="Foreground" Value="#D4A8B0"/>
+      <Setter Property="LetterSpacing" Value="1"/>
+    </Style>
+  </UserControl.Styles>
+
+  <DockPanel Background="#100E14">
+    <!-- Header -->
+    <Border DockPanel.Dock="Top" Padding="12,10" BorderBrush="#2A2530" BorderThickness="0,0,0,1">
+      <Grid ColumnDefinitions="*,Auto">
+        <StackPanel Orientation="Horizontal" Spacing="8">
+          <TextBlock Text="DOM" FontSize="16" FontWeight="SemiBold" Foreground="#F3ECEF" VerticalAlignment="Center"/>
+          <TextBlock Text="{Binding StatusText}" FontSize="11" Foreground="#8A7F88" VerticalAlignment="Center"
+                     TextTrimming="CharacterEllipsis" MaxWidth="160"/>
+        </StackPanel>
+        <Button Grid.Column="1" Content="{Binding LiveBadge}" Command="{Binding TogglePauseCommand}"
+                Padding="10,4" Background="#1A1520" Foreground="#D4A8B0" BorderBrush="#3A2A32" BorderThickness="1"/>
+      </Grid>
+    </Border>
+
+    <!-- Symbol + controls -->
+    <Border DockPanel.Dock="Top" Padding="10,8" BorderBrush="#2A2530" BorderThickness="0,0,0,1" Background="#141018">
+      <StackPanel Spacing="8">
+        <WrapPanel ItemHeight="32">
+          <Button Classes="seg" Content="SPY" Command="{Binding SetSymbolCommand}" CommandParameter="SPY"/>
+          <Button Classes="seg" Content="QQQ" Command="{Binding SetSymbolCommand}" CommandParameter="QQQ"/>
+          <Button Classes="seg" Content="AAPL" Command="{Binding SetSymbolCommand}" CommandParameter="AAPL"/>
+          <Button Classes="seg" Content="TSLA" Command="{Binding SetSymbolCommand}" CommandParameter="TSLA"/>
+          <Button Classes="seg" Content="ES" Command="{Binding SetSymbolCommand}" CommandParameter="ES"/>
+          <Button Classes="seg" Content="SPX" Command="{Binding SetSymbolCommand}" CommandParameter="SPX"/>
+        </WrapPanel>
+        <WrapPanel ItemHeight="32">
+          <TextBlock Text="QTY" Classes="hh" VerticalAlignment="Center" Margin="0,0,6,0"/>
+          <Button Classes="seg" Content="1" Command="{Binding SetQtyCommand}" CommandParameter="1"/>
+          <Button Classes="seg" Content="2" Command="{Binding SetQtyCommand}" CommandParameter="2"/>
+          <Button Classes="seg" Content="5" Command="{Binding SetQtyCommand}" CommandParameter="5"/>
+          <Button Classes="seg" Content="10" Command="{Binding SetQtyCommand}" CommandParameter="10"/>
+          <TextBlock Text="{Binding OrderQty, StringFormat=×{0}}" Foreground="#F3ECEF" VerticalAlignment="Center" Margin="4,0,10,0"
+                     FontFamily="Consolas,Courier New,monospace"/>
+          <Button Classes="seg" Classes.on="{Binding FollowLast}" Content="Follow" Command="{Binding ToggleFollowCommand}"/>
+          <Button Classes="seg" Content="Center" Command="{Binding CenterCommand}"/>
+        </WrapPanel>
+      </StackPanel>
+    </Border>
+
+    <!-- KPI strip — stacked so narrow tool dock never overlaps -->
+    <Border DockPanel.Dock="Top" Padding="10,8" BorderBrush="#2A2530" BorderThickness="0,0,0,1" Background="#121014">
+      <StackPanel Spacing="6">
+        <Grid ColumnDefinitions="64,*">
+          <TextBlock Classes="hh" Text="LAST" VerticalAlignment="Center"/>
+          <TextBlock Grid.Column="1" Text="{Binding LastLabel}" TextTrimming="CharacterEllipsis"
+                     FontFamily="Consolas,Courier New,monospace" FontSize="12" Foreground="#F3ECEF"
+                     VerticalAlignment="Center"/>
+        </Grid>
+        <Grid ColumnDefinitions="64,*">
+          <TextBlock Classes="hh" Text="LTQ" VerticalAlignment="Center"/>
+          <TextBlock Grid.Column="1" Text="{Binding LtqLabel}"
+                     FontFamily="Consolas,Courier New,monospace" FontSize="12" FontWeight="Bold"
+                     Foreground="{Binding LtqBrush}" VerticalAlignment="Center"/>
+        </Grid>
+        <Grid ColumnDefinitions="64,*">
+          <TextBlock Classes="hh" Text="SPREAD" VerticalAlignment="Center"/>
+          <TextBlock Grid.Column="1" Text="{Binding SpreadLabel}" TextTrimming="CharacterEllipsis"
+                     FontFamily="Consolas,Courier New,monospace" FontSize="12" Foreground="#D4A8B0"
+                     VerticalAlignment="Center"/>
+        </Grid>
+        <Grid ColumnDefinitions="64,*">
+          <TextBlock Classes="hh" Text="BOOK" VerticalAlignment="Center"/>
+          <TextBlock Grid.Column="1" Text="{Binding ImbalanceLabel}"
+                     FontFamily="Consolas,Courier New,monospace" FontSize="12" FontWeight="Bold"
+                     Foreground="#F3ECEF" VerticalAlignment="Center"/>
+        </Grid>
+      </StackPanel>
+    </Border>
+
+    <!-- Column headers -->
+    <Border DockPanel.Dock="Top" Padding="6,6" Background="#141018" BorderBrush="#2A2530" BorderThickness="0,0,0,1">
+      <Grid ColumnDefinitions="76,48,70,76,36">
+        <TextBlock Classes="hh" Text="BID" HorizontalAlignment="Right" Margin="0,0,6,0"/>
+        <TextBlock Grid.Column="1" Classes="hh" Text="VOL" HorizontalAlignment="Center"/>
+        <TextBlock Grid.Column="2" Classes="hh" Text="PRICE" HorizontalAlignment="Center"/>
+        <TextBlock Grid.Column="3" Classes="hh" Text="ASK" Margin="6,0,0,0"/>
+        <TextBlock Grid.Column="4" Classes="hh" Text="LTQ" HorizontalAlignment="Right"/>
+      </Grid>
+    </Border>
+
+    <TextBlock DockPanel.Dock="Bottom" Margin="10,6" FontSize="10" Foreground="#6A6068"
+               Text="Click BID = buy · ASK = sell · PRICE = cancel working (mock)"/>
+
+    <!-- Ladder -->
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled" Background="#100E14">
+      <ItemsControl ItemsSource="{Binding Rows}">
+        <ItemsControl.ItemTemplate>
+          <DataTemplate>
+            <Border Background="{Binding RowBg}" BorderBrush="#1A1620" BorderThickness="0,0,0,1" Height="26">
+              <Grid ColumnDefinitions="76,48,70,76,36">
+                <!-- BID -->
+                <Button Classes="cell" Tag="{Binding}" Click="OnBidClick">
+                  <Grid>
+                    <Border HorizontalAlignment="Right" VerticalAlignment="Stretch"
+                            Width="{Binding BidBar}" Background="#3322C55E" Margin="0,2"/>
+                    <TextBlock Text="{Binding BidLabel}" Foreground="{Binding BidFg}"
+                               FontFamily="Consolas,Courier New,monospace" FontSize="12" FontWeight="Bold"
+                               HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                  </Grid>
+                </Button>
+
+                <!-- VOL at price -->
+                <Grid Grid.Column="1">
+                  <Border HorizontalAlignment="Center" VerticalAlignment="Stretch"
+                          Width="{Binding VolBar}" Background="#33D4A8B0" Margin="0,3"/>
+                  <TextBlock Text="{Binding VolLabel}" Foreground="#A89BA3"
+                             FontFamily="Consolas,Courier New,monospace" FontSize="10"
+                             HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Grid>
+
+                <!-- PRICE + working -->
+                <Button Grid.Column="2" Classes="cell" Tag="{Binding}" Click="OnPriceClick">
+                  <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="4">
+                    <TextBlock Text="{Binding PriceLabel}" Foreground="{Binding PriceFg}"
+                               FontFamily="Consolas,Courier New,monospace" FontSize="12" FontWeight="Bold"
+                               VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding WorkingLabel}" Foreground="#D4A8B0" FontSize="9" FontWeight="Bold"
+                               VerticalAlignment="Center"/>
+                  </StackPanel>
+                </Button>
+
+                <!-- ASK -->
+                <Button Grid.Column="3" Classes="cell" Tag="{Binding}" Click="OnAskClick">
+                  <Grid>
+                    <Border HorizontalAlignment="Left" VerticalAlignment="Stretch"
+                            Width="{Binding AskBar}" Background="#33EF4444" Margin="0,2"/>
+                    <TextBlock Text="{Binding AskLabel}" Foreground="{Binding AskFg}"
+                               FontFamily="Consolas,Courier New,monospace" FontSize="12" FontWeight="Bold"
+                               HorizontalAlignment="Left" VerticalAlignment="Center" Margin="6,0,0,0"/>
+                  </Grid>
+                </Button>
+
+                <!-- LTQ flash -->
+                <TextBlock Grid.Column="4" Text="{Binding LtqFlash}" Foreground="{Binding LtqFg}"
+                           FontFamily="Consolas,Courier New,monospace" FontSize="11" FontWeight="Bold"
+                           HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,4,0"/>
+              </Grid>
+            </Border>
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+    </ScrollViewer>
+  </DockPanel>
+</UserControl>

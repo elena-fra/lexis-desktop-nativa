@@ -1,0 +1,17 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Lexis.Desktop.App.ViewModels.Documents"
+             x:Class="Lexis.Desktop.App.Views.Documents.PlaceholderDocumentView"
+             x:DataType="vm:PlaceholderDocumentViewModel">
+    <Border Padding="28" Background="#0B1220">
+        <StackPanel Spacing="12" MaxWidth="560" VerticalAlignment="Center" HorizontalAlignment="Left">
+            <Border Background="#1E293B" Padding="6,3" CornerRadius="3" HorizontalAlignment="Left">
+                <TextBlock Text="{Binding Badge}" FontSize="11" Foreground="#94A3B8" />
+            </Border>
+            <TextBlock Text="{Binding Headline}" FontSize="28" FontWeight="SemiBold" Foreground="#F8FAFC" />
+            <TextBlock Text="{Binding Blurb}" TextWrapping="Wrap" FontSize="14" Foreground="#94A3B8" LineHeight="22" />
+            <TextBlock Text="Apri da menu Desk · pannello dockabile · dati reali in un passo successivo."
+                       FontSize="12" Foreground="#64748B" TextWrapping="Wrap" Margin="0,8,0,0" />
+        </StackPanel>
+    </Border>
+</UserControl>

@@ -1,0 +1,58 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="using:Lexis.Desktop.App"
+             xmlns:docs="using:Lexis.Desktop.App.ViewModels.Documents"
+             xmlns:tools="using:Lexis.Desktop.App.ViewModels.Tools"
+             xmlns:docViews="using:Lexis.Desktop.App.Views.Documents"
+             xmlns:toolViews="using:Lexis.Desktop.App.Views.Tools"
+             xmlns:dockFluent="using:Dock.Avalonia.Themes.Fluent"
+             x:Class="Lexis.Desktop.App.App"
+             RequestedThemeVariant="Dark">
+
+    <Application.DataTemplates>
+        <!-- Typed maps also registered in App.axaml.cs (FuncDataTemplate) — keep XAML as backup -->
+        <DataTemplate DataType="tools:TimeSalesToolViewModel">
+            <toolViews:TimeSalesToolView />
+        </DataTemplate>
+        <DataTemplate DataType="tools:DomLadderToolViewModel">
+            <toolViews:DomLadderToolView />
+        </DataTemplate>
+        <DataTemplate DataType="tools:StatusToolViewModel">
+            <toolViews:StatusToolView />
+        </DataTemplate>
+        <DataTemplate DataType="tools:PlaceholderToolViewModel">
+            <toolViews:PlaceholderToolView />
+        </DataTemplate>
+        <DataTemplate DataType="docs:OptionChainDocumentViewModel">
+            <docViews:OptionChainDocumentView />
+        </DataTemplate>
+        <DataTemplate DataType="docs:OptionFlowDocumentViewModel">
+            <docViews:OptionFlowDocumentView />
+        </DataTemplate>
+        <DataTemplate DataType="docs:ChartsDocumentViewModel">
+            <docViews:ChartsDocumentView />
+        </DataTemplate>
+        <DataTemplate DataType="docs:GexDocumentViewModel">
+            <docViews:GexDocumentView />
+        </DataTemplate>
+        <DataTemplate DataType="docs:GrecheDocumentViewModel">
+            <docViews:GrecheDocumentView />
+        </DataTemplate>
+        <DataTemplate DataType="docs:DashboardDocumentViewModel">
+            <docViews:DashboardDocumentView />
+        </DataTemplate>
+        <DataTemplate DataType="docs:PortfolioDocumentViewModel">
+            <docViews:PortfolioDocumentView />
+        </DataTemplate>
+        <DataTemplate DataType="docs:PlaceholderDocumentViewModel">
+            <docViews:PlaceholderDocumentView />
+        </DataTemplate>
+        <local:ViewLocator />
+    </Application.DataTemplates>
+
+    <Application.Styles>
+        <FluentTheme />
+        <dockFluent:DockFluentTheme />
+        <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml" />
+    </Application.Styles>
+</Application>

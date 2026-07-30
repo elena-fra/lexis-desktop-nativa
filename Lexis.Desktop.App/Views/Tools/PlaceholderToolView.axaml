@@ -1,0 +1,15 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Lexis.Desktop.App.ViewModels.Tools"
+             x:Class="Lexis.Desktop.App.Views.Tools.PlaceholderToolView"
+             x:DataType="vm:PlaceholderToolViewModel">
+    <Border Padding="16" Background="#0F172A">
+        <StackPanel Spacing="10">
+            <Border Background="#1E293B" Padding="6,3" CornerRadius="3" HorizontalAlignment="Left">
+                <TextBlock Text="{Binding Badge}" FontSize="11" Foreground="#94A3B8" />
+            </Border>
+            <TextBlock Text="{Binding Headline}" FontSize="18" FontWeight="SemiBold" Foreground="#E2E8F0" />
+            <TextBlock Text="{Binding Blurb}" TextWrapping="Wrap" Foreground="#94A3B8" LineHeight="20" />
+        </StackPanel>
+    </Border>
+</UserControl>

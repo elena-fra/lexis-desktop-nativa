@@ -1,0 +1,87 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Lexis.Desktop.App.ViewModels"
+        xmlns:dock="using:Dock.Avalonia.Controls"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="1280" d:DesignHeight="800"
+        x:Class="Lexis.Desktop.App.Views.MainWindow"
+        x:DataType="vm:MainViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Width="1280" Height="800"
+        Title="{Binding AppTitle}">
+
+    <Design.DataContext>
+        <vm:MainViewModel />
+    </Design.DataContext>
+
+    <DockPanel>
+        <Border DockPanel.Dock="Top"
+                Background="#0B1220"
+                BorderBrush="#1E293B"
+                BorderThickness="0,0,0,1">
+            <StackPanel>
+                <Grid ColumnDefinitions="Auto,*" Margin="12,8,12,4">
+                    <TextBlock Text="LEXIS"
+                               FontSize="18"
+                               FontWeight="Bold"
+                               Foreground="#E2E8F0"
+                               VerticalAlignment="Center" />
+                    <TextBlock Grid.Column="1"
+                               Text="{Binding ConnectionStatus}"
+                               FontSize="12"
+                               Foreground="#94A3B8"
+                               VerticalAlignment="Center"
+                               Margin="12,2,0,0" />
+                </Grid>
+
+                <Menu Background="Transparent" Padding="4,0,4,6">
+                    <MenuItem Header="_Desk">
+                        <MenuItem Header="_Riepilogo" Command="{Binding OpenPanelCommand}" CommandParameter="dashboard" />
+                        <MenuItem Header="_GEX" Command="{Binding OpenPanelCommand}" CommandParameter="gex" />
+                        <MenuItem Header="Grec_he" Command="{Binding OpenPanelCommand}" CommandParameter="greche" />
+                        <MenuItem Header="Option _Chain" Command="{Binding OpenPanelCommand}" CommandParameter="chain" />
+                        <MenuItem Header="Option _Flow" Command="{Binding OpenPanelCommand}" CommandParameter="order" />
+                        <Separator />
+                        <MenuItem Header="Grafici" Command="{Binding OpenPanelCommand}" CommandParameter="graf" />
+                        <MenuItem Header="Strategy Builder" Command="{Binding OpenPanelCommand}" CommandParameter="strategy" />
+                        <MenuItem Header="Backtest" Command="{Binding OpenPanelCommand}" CommandParameter="backtest" />
+                        <MenuItem Header="Quant &amp; Algo" Command="{Binding OpenPanelCommand}" CommandParameter="quant" />
+                        <MenuItem Header="Rischio &amp; Payoff" Command="{Binding OpenPanelCommand}" CommandParameter="risk" />
+                        <Separator />
+                        <MenuItem Header="Volatility" Command="{Binding OpenPanelCommand}" CommandParameter="vol" />
+                        <MenuItem Header="Heatmap" Command="{Binding OpenPanelCommand}" CommandParameter="heatmap" />
+                        <MenuItem Header="Scanner" Command="{Binding OpenPanelCommand}" CommandParameter="scanner" />
+                        <Separator />
+                        <MenuItem Header="Posizioni" Command="{Binding OpenPanelCommand}" CommandParameter="positions" />
+                        <MenuItem Header="Portafoglio" Command="{Binding OpenPanelCommand}" CommandParameter="portfolio" />
+                        <MenuItem Header="Mentor (AI)" Command="{Binding OpenPanelCommand}" CommandParameter="journal" />
+                        <MenuItem Header="Diretta TV" Command="{Binding OpenPanelCommand}" CommandParameter="tv" />
+                    </MenuItem>
+
+                    <MenuItem Header="_Tools">
+                        <MenuItem Header="Status / IPC" Command="{Binding OpenPanelCommand}" CommandParameter="status" />
+                        <MenuItem Header="DOM" Command="{Binding OpenPanelCommand}" CommandParameter="dom" />
+                        <MenuItem Header="Footprint" Command="{Binding OpenPanelCommand}" CommandParameter="footprint" />
+                        <MenuItem Header="Volume Profile" Command="{Binding OpenPanelCommand}" CommandParameter="profile" />
+                        <MenuItem Header="Time &amp; Sales" Command="{Binding OpenPanelCommand}" CommandParameter="timesales" />
+                    </MenuItem>
+
+                    <MenuItem Header="_View">
+                        <MenuItem Header="Option Chain" Command="{Binding OpenPanelCommand}" CommandParameter="chain" />
+                        <MenuItem Header="Riepilogo" Command="{Binding OpenPanelCommand}" CommandParameter="dashboard" />
+                        <MenuItem Header="GEX" Command="{Binding OpenPanelCommand}" CommandParameter="gex" />
+                        <MenuItem Header="Greche" Command="{Binding OpenPanelCommand}" CommandParameter="greche" />
+                        <MenuItem Header="Status / IPC" Command="{Binding OpenPanelCommand}" CommandParameter="status" />
+                    </MenuItem>
+                </Menu>
+            </StackPanel>
+        </Border>
+
+        <dock:DockControl Layout="{Binding Layout}"
+                          Factory="{Binding Factory}"
+                          InitializeLayout="True"
+                          InitializeFactory="True"
+                          Margin="0" />
+    </DockPanel>
+</Window>

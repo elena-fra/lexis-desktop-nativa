@@ -1,0 +1,12 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Lexis.Desktop.App.ViewModels.Tools"
+             x:Class="Lexis.Desktop.App.Views.Tools.DomPlaceholderToolView"
+             x:DataType="vm:DomPlaceholderToolViewModel">
+    <Border Padding="16" Background="#0F172A">
+        <TextBlock Text="{Binding Message}"
+                   TextWrapping="Wrap"
+                   Foreground="#94A3B8"
+                   LineHeight="22" />
+    </Border>
+</UserControl>
