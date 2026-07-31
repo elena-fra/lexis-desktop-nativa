@@ -131,7 +131,7 @@
                 <Button Classes="cell" Tag="{Binding}" Click="OnBidClick">
                   <Grid>
                     <Border HorizontalAlignment="Right" VerticalAlignment="Stretch"
-                            Width="{Binding BidBar}" Background="#3322C55E" Margin="0,2"/>
+                            Width="{Binding BidBar}" Background="#6600FF7A" Margin="0,2"/>
                     <TextBlock Text="{Binding BidLabel}" Foreground="{Binding BidFg}"
                                FontFamily="Consolas,Courier New,monospace" FontSize="12" FontWeight="Bold"
                                HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,6,0"/>
@@ -162,7 +162,7 @@
                 <Button Grid.Column="3" Classes="cell" Tag="{Binding}" Click="OnAskClick">
                   <Grid>
                     <Border HorizontalAlignment="Left" VerticalAlignment="Stretch"
-                            Width="{Binding AskBar}" Background="#33EF4444" Margin="0,2"/>
+                            Width="{Binding AskBar}" Background="#66FF3B5C" Margin="0,2"/>
                     <TextBlock Text="{Binding AskLabel}" Foreground="{Binding AskFg}"
                                FontFamily="Consolas,Courier New,monospace" FontSize="12" FontWeight="Bold"
                                HorizontalAlignment="Left" VerticalAlignment="Center" Margin="6,0,0,0"/>

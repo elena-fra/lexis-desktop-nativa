@@ -21,7 +21,7 @@
                 BorderBrush="#1E293B"
                 BorderThickness="0,0,0,1">
             <StackPanel>
-                <Grid ColumnDefinitions="Auto,*" Margin="12,8,12,4">
+                <Grid ColumnDefinitions="Auto,*,Auto" Margin="12,8,12,4">
                     <TextBlock Text="LEXIS"
                                FontSize="18"
                                FontWeight="Bold"
@@ -33,6 +33,17 @@
                                Foreground="#94A3B8"
                                VerticalAlignment="Center"
                                Margin="12,2,0,0" />
+                    <Button Grid.Column="2"
+                            Content="Status / IPC"
+                            Command="{Binding ReopenStatusCommand}"
+                            IsVisible="{Binding ShowReopenStatus}"
+                            Padding="10,4"
+                            Margin="8,0,0,0"
+                            Background="#1A1520"
+                            Foreground="#D4A8B0"
+                            BorderBrush="#3A2A32"
+                            BorderThickness="1"
+                            ToolTip.Tip="Riapri il pannello Status / IPC" />
                 </Grid>
 
                 <Menu Background="Transparent" Padding="4,0,4,6">

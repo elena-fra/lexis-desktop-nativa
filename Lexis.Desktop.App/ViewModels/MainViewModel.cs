@@ -16,10 +16,14 @@ public partial class MainViewModel : ViewModelBase, IAsyncDisposable
 
     [ObservableProperty] private IRootDock? _layout;
     [ObservableProperty] private string _connectionStatus = "Connecting…";
+    [ObservableProperty] private bool _isStatusOpen = true;
 
     public IFactory Factory => _factory;
 
     public string AppTitle { get; private set; } = "LEXIS · Options Desk";
+
+    /// <summary>Show header button when Status / IPC was closed.</summary>
+    public bool ShowReopenStatus => !IsStatusOpen;
 
     public ObservableCollection<DeskCatalog.Panel> DeskPanels { get; } = new(DeskCatalog.Documents);
 
@@ -35,17 +39,33 @@ public partial class MainViewModel : ViewModelBase, IAsyncDisposable
             : "LEXIS · Options Desk · mock";
 
         _factory = new LexisDockFactory(_hub, _ipc);
+        _factory.StatusVisibilityChanged = open =>
+        {
+            IsStatusOpen = open;
+            OnPropertyChanged(nameof(ShowReopenStatus));
+        };
         var layout = _factory.CreateLayout();
         _factory.InitLayout(layout);
         Layout = layout;
+        IsStatusOpen = _factory.IsStatusVisible();
     }
+
+    partial void OnIsStatusOpenChanged(bool value) => OnPropertyChanged(nameof(ShowReopenStatus));
 
     [RelayCommand]
     private void OpenPanel(string? id)
     {
         if (string.IsNullOrWhiteSpace(id)) return;
         _factory.OpenPanel(id);
+        if (id == "status")
+        {
+            IsStatusOpen = true;
+            OnPropertyChanged(nameof(ShowReopenStatus));
+        }
     }
+
+    [RelayCommand]
+    private void ReopenStatus() => OpenPanel("status");
 
     public async ValueTask DisposeAsync()
     {

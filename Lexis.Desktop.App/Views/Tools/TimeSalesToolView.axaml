@@ -78,11 +78,11 @@
       <StackPanel Spacing="6">
         <Grid ColumnDefinitions="64,*">
           <TextBlock Classes="hh" Text="BUY" VerticalAlignment="Center"/>
-          <TextBlock Grid.Column="1" Text="{Binding BuyVolLabel}" Classes="cell" Foreground="#86EFAC" FontWeight="Bold"/>
+          <TextBlock Grid.Column="1" Text="{Binding BuyVolLabel}" Classes="cell" Foreground="#00FF7A" FontWeight="Bold"/>
         </Grid>
         <Grid ColumnDefinitions="64,*">
           <TextBlock Classes="hh" Text="SELL" VerticalAlignment="Center"/>
-          <TextBlock Grid.Column="1" Text="{Binding SellVolLabel}" Classes="cell" Foreground="#FCA5A5" FontWeight="Bold"/>
+          <TextBlock Grid.Column="1" Text="{Binding SellVolLabel}" Classes="cell" Foreground="#FF3B5C" FontWeight="Bold"/>
         </Grid>
         <Grid ColumnDefinitions="64,*">
           <TextBlock Classes="hh" Text="DELTA" VerticalAlignment="Center"/>

@@ -59,16 +59,17 @@ public partial class OptionChainDocumentViewModel : Document, IDisposable
     public int SelectedStrikeCount =>
         int.TryParse(SelectedStrikeCountOption, out var n) ? n : 21;
 
+    // Default: quotes + strike + IV/Δ only — extra greeks overlap/crush the strike column.
     [ObservableProperty] private bool _showIv = true;
     [ObservableProperty] private bool _showDelta = true;
-    [ObservableProperty] private bool _showGamma = true;
-    [ObservableProperty] private bool _showTheta = true;
-    [ObservableProperty] private bool _showVega = true;
-    [ObservableProperty] private bool _showVol = true;
-    [ObservableProperty] private bool _showOi = true;
+    [ObservableProperty] private bool _showGamma = false;
+    [ObservableProperty] private bool _showTheta = false;
+    [ObservableProperty] private bool _showVega = false;
+    [ObservableProperty] private bool _showVol = false;
+    [ObservableProperty] private bool _showOi = false;
 
     [ObservableProperty] private bool _ticketOpen;
-    [ObservableProperty] private string _ticketAccent = "#22C55E";
+    [ObservableProperty] private string _ticketAccent = "#00FF7A";
     [ObservableProperty] private string _ticketHeadline = "";
     [ObservableProperty] private string _ticketDetails = "";
     [ObservableProperty] private double _ticketQty = 1;
@@ -128,17 +129,17 @@ public partial class OptionChainDocumentViewModel : Document, IDisposable
             return;
         }
 
-        StatusText = "Live mock · background tick + UI sample 32ms";
+        StatusText = "Live mock · background tick + UI sample ~48ms";
 
-        // Produce off UI thread; coalesce to ~30fps to reduce GC/freeze (docs §2.1 / §3.4)
+        // Produce off UI thread; coalesce to ~20fps to reduce GC/freeze (docs §2.1 / §3.4)
         _subscription = Observable
-            .Interval(TimeSpan.FromMilliseconds(8), Scheduler.Default)
+            .Interval(TimeSpan.FromMilliseconds(16), Scheduler.Default)
             .Select(_ =>
             {
                 lock (_chainGate) return _feed.Tick(_chain);
             })
-            .Sample(TimeSpan.FromMilliseconds(32))
-            .Subscribe(chain => PostUi(() =>
+            .Sample(UiFeed.Frame)
+            .Subscribe(chain => UiFeed.Post(() =>
             {
                 ApplyChain(chain, light: true);
                 LiveHud = $"live {chain.Spot:F2} · {Rows.Count} rows";
@@ -174,10 +175,10 @@ public partial class OptionChainDocumentViewModel : Document, IDisposable
 
         StopLive();
         FollowIpc = true;
-        StatusText = "IPC follow · spot bump + Tick (no full rebuild) @ 32ms";
+        StatusText = "IPC follow · spot bump + Tick (no full rebuild) @ ~48ms";
 
         // Heavy path avoided: don't Create() every trade — Tick around last IPC price.
-        _ipcSub = _ipc.CoalescedTrades(TimeSpan.FromMilliseconds(32))
+        _ipcSub = _ipc.CoalescedTrades(UiFeed.Frame)
             .Subscribe(trade =>
             {
                 ChainDto next;
@@ -190,7 +191,6 @@ public partial class OptionChainDocumentViewModel : Document, IDisposable
                     }
                     else
                     {
-                        // Force spot to IPC last, then micro-tick for quote noise
                         _chain = _chain with { Spot = trade.Price };
                         _chain = _feed.Tick(_chain);
                         _chain = _chain with { Spot = Math.Round(trade.Price, 2) };
@@ -198,7 +198,7 @@ public partial class OptionChainDocumentViewModel : Document, IDisposable
                     next = _chain;
                 }
 
-                PostUi(() =>
+                UiFeed.Post(() =>
                 {
                     ApplyChain(next, light: true);
                     LiveHud = $"IPC {trade.Symbol} {trade.Price:F2} seq={trade.Sequence}";
@@ -437,8 +437,7 @@ public partial class OptionChainDocumentViewModel : Document, IDisposable
         ReloadChain();
     }
 
-    private static void PostUi(Action action) =>
-        Dispatcher.UIThread.Post(action, DispatcherPriority.Background);
+    private static void PostUi(Action action) => UiFeed.Post(action);
 
     public void Dispose()
     {

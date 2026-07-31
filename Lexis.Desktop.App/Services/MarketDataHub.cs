@@ -47,42 +47,19 @@ public sealed class MarketDataHub : IDisposable
     public static MarketDataHub Create(DeskSettings? settings = null)
     {
         settings ??= DeskSettings.Load();
+
+        // Stability (scheda §5 / §2.1): never touch the network during Avalonia
+        // construction. PreferApi is recorded in the status label only until a
+        // real feed path is wired (Databento / API attach after first paint).
         LexisApiClient? api = null;
-        var apiOk = false;
+        const bool apiOk = false;
 
-        if (settings.PreferApi)
-        {
-            try
-            {
-                api = new LexisApiClient(settings);
-                using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(2));
-                apiOk = api.TryConnectAsync(cts.Token).ConfigureAwait(false).GetAwaiter().GetResult();
-            }
-            catch
-            {
-                apiOk = false;
-            }
-        }
-
-        IChainFeed chain;
-        IFlowFeed flow;
-        string status;
-        string mode;
-
-        if (apiOk && api is not null)
-        {
-            chain = new HybridChainFeed(api, true);
-            flow = new ApiFlowFeed(api);
-            status = $"API · {settings.ApiBaseUrl} · {api.ModeLabel}";
-            mode = "API";
-        }
-        else
-        {
-            chain = new MockChainFeedAdapter();
-            flow = new MockFlowFeedAdapter();
-            status = api?.ModeLabel ?? "mock (API off)";
-            mode = "mock";
-        }
+        IChainFeed chain = new MockChainFeedAdapter();
+        IFlowFeed flow = new MockFlowFeedAdapter();
+        var status = settings.PreferApi
+            ? $"mock stable · API deferred ({settings.ApiBaseUrl})"
+            : "mock stable · PreferApi off";
+        const string mode = "mock";
 
         var greeks = new GreeksFeed(chain);
         var gex = new ChainGexFeed(chain);

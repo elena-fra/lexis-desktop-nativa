@@ -159,11 +159,11 @@
               </StackPanel>
               <Grid ColumnDefinitions="*,*">
                 <StackPanel Orientation="Horizontal" Spacing="6">
-                  <Border Width="8" Height="8" Background="#22C55E" VerticalAlignment="Center"/>
+                  <Border Width="8" Height="8" Background="#00FF7A" VerticalAlignment="Center"/>
                   <TextBlock Text="{Binding CallLabel}" FontSize="11" Foreground="#A89BA3"/>
                 </StackPanel>
                 <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6" HorizontalAlignment="Right">
-                  <Border Width="8" Height="8" Background="#EF4444" VerticalAlignment="Center"/>
+                  <Border Width="8" Height="8" Background="#FF3B5C" VerticalAlignment="Center"/>
                   <TextBlock Text="{Binding PutLabel}" FontSize="11" Foreground="#A89BA3"/>
                 </StackPanel>
               </Grid>

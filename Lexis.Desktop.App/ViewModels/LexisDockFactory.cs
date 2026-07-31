@@ -23,6 +23,7 @@ public sealed class LexisDockFactory : Factory
     private IRootDock? _rootDock;
     private DocumentDock? _documentDock;
     private ToolDock? _toolDock;
+    private ProportionalDock? _shellSplit;
     private OptionChainDocumentViewModel? _chain;
     private OptionFlowDocumentViewModel? _flow;
     private ChartsDocumentViewModel? _charts;
@@ -34,6 +35,11 @@ public sealed class LexisDockFactory : Factory
     private DomLadderToolViewModel? _dom;
     private TimeSalesToolViewModel? _timeSales;
 
+    private const double ToolPaneProportion = 0.28;
+
+    /// <summary>True when Status / IPC is visible in the right tool pane.</summary>
+    public Action<bool>? StatusVisibilityChanged { get; set; }
+
     public LexisDockFactory(MarketDataHub hub, IpcTradeFeed? ipc = null)
     {
         _hub = hub;
@@ -44,42 +50,41 @@ public sealed class LexisDockFactory : Factory
 
     public override IRootDock CreateLayout()
     {
+        _status = new StatusToolViewModel(_ipc)
+        {
+            Id = "status",
+            Title = "Status / IPC",
+            CanClose = true,
+        };
+        var dash = EnsureDashboard();
+        // Lean startup: only Riepilogo + Option Chain. Flow/GEX/Greche/DOM/T&S
+        // are created on OpenPanel — fewer live timers during first paint.
         _chain = new OptionChainDocumentViewModel(_hub.Chain, _ipc)
         {
             Id = "chain",
             Title = "Option Chain",
         };
-        _status = new StatusToolViewModel(_ipc);
-        _dom = new DomLadderToolViewModel
-        {
-            Id = "dom",
-            Title = "DOM",
-            CanClose = true,
-        };
 
-        var flow = EnsureFlow();
-        var gex = EnsureGex();
-        var greche = EnsureGreche();
-        var dash = EnsureDashboard();
         _documentDock = new DocumentDock
         {
             Id = "Documents",
             IsCollapsable = false,
             ActiveDockable = dash,
-            VisibleDockables = CreateList<IDockable>(dash, _chain, flow, gex, greche),
+            VisibleDockables = CreateList<IDockable>(dash, _chain),
             CanCreateDocument = false,
         };
 
         _toolDock = new ToolDock
         {
             Id = "RightTools",
-            Proportion = 0.32,
+            Proportion = ToolPaneProportion,
             Alignment = Alignment.Right,
-            ActiveDockable = EnsureTimeSales(),
-            VisibleDockables = CreateList<IDockable>(_status, _dom, EnsureTimeSales()),
+            ActiveDockable = _status,
+            VisibleDockables = CreateList<IDockable>(_status),
+            CanCloseLastDockable = true,
         };
 
-        var mainLayout = new ProportionalDock
+        _shellSplit = new ProportionalDock
         {
             Orientation = Orientation.Horizontal,
             VisibleDockables = CreateList<IDockable>(
@@ -91,9 +96,10 @@ public sealed class LexisDockFactory : Factory
         _rootDock = CreateRootDock();
         _rootDock.Id = "Root";
         _rootDock.IsCollapsable = false;
-        _rootDock.ActiveDockable = mainLayout;
-        _rootDock.DefaultDockable = mainLayout;
-        _rootDock.VisibleDockables = CreateList<IDockable>(mainLayout);
+        _rootDock.ActiveDockable = _shellSplit;
+        _rootDock.DefaultDockable = _shellSplit;
+        _rootDock.VisibleDockables = CreateList<IDockable>(_shellSplit);
+        NotifyStatusVisibility(true);
         return _rootDock;
     }
 
@@ -258,9 +264,13 @@ public sealed class LexisDockFactory : Factory
     {
         if (_toolDock is null) return;
 
+        ExpandToolPane();
+
         if (panel.Id == "status")
         {
-            EnsureDockable(_toolDock, _status ??= new StatusToolViewModel(_ipc));
+            EnsureStatusTool();
+            EnsureDockable(_toolDock, _status!);
+            NotifyStatusVisibility(true);
             return;
         }
 
@@ -287,6 +297,17 @@ public sealed class LexisDockFactory : Factory
         Focus(_toolDock, tool);
     }
 
+    private void EnsureStatusTool()
+    {
+        if (_status is not null) return;
+        _status = new StatusToolViewModel(_ipc)
+        {
+            Id = "status",
+            Title = "Status / IPC",
+            CanClose = true,
+        };
+    }
+
     private DomLadderToolViewModel EnsureDom()
     {
         if (_dom is not null && _toolDock is not null && FindById(_toolDock, "dom") is not null)
@@ -307,7 +328,6 @@ public sealed class LexisDockFactory : Factory
         if (_timeSales is not null && _toolDock is not null && FindById(_toolDock, "timesales") is not null)
             return _timeSales;
 
-        // First layout call: _toolDock may still be null — create once
         if (_timeSales is not null && _toolDock is null)
             return _timeSales;
 
@@ -326,6 +346,8 @@ public sealed class LexisDockFactory : Factory
         if (FindById(dock, dockable.Id ?? "") is null)
             AddDockable(dock, dockable);
         Focus(dock, dockable);
+        if (ReferenceEquals(dock, _toolDock))
+            ExpandToolPane();
     }
 
     private void Focus(IDock dock, IDockable dockable)
@@ -336,7 +358,41 @@ public sealed class LexisDockFactory : Factory
     }
 
     private static IDockable? FindById(IDock dock, string id) =>
-        dock.VisibleDockables?.FirstOrDefault(d => d.Id == id);
+        dock.VisibleDockables?.FirstOrDefault(d =>
+            string.Equals(d.Id, id, StringComparison.OrdinalIgnoreCase));
+
+    private void ExpandToolPane()
+    {
+        if (_toolDock is null) return;
+        if (_toolDock.Proportion < 0.05)
+            _toolDock.Proportion = ToolPaneProportion;
+    }
+
+    private void CollapseToolPaneIfEmpty()
+    {
+        if (_toolDock is null) return;
+        var count = _toolDock.VisibleDockables?.Count ?? 0;
+        if (count == 0)
+            _toolDock.Proportion = 0;
+        NotifyStatusVisibility(IsStatusVisible());
+    }
+
+    public bool IsStatusVisible() =>
+        _toolDock is not null && FindById(_toolDock, "status") is not null;
+
+    private void NotifyStatusVisibility(bool visible) =>
+        StatusVisibilityChanged?.Invoke(visible);
+
+    /// <summary>Close handler — collapse empty right pane and refresh reopen button.</summary>
+    public override void CloseDockable(IDockable dockable)
+    {
+        base.CloseDockable(dockable);
+        if (string.Equals(dockable.Id, "status", StringComparison.OrdinalIgnoreCase))
+        {
+            // Keep instance for fast reopen; just leave the dock
+        }
+        CollapseToolPaneIfEmpty();
+    }
 
     public override void InitLayout(IDockable layout)
     {

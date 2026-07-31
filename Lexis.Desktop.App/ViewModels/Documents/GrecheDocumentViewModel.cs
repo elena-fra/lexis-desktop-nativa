@@ -55,11 +55,11 @@ public partial class GrecheDocumentViewModel : Document
     [ObservableProperty] private string _posVegaLabel = "—";
     [ObservableProperty] private string _posBwdLabel = "—";
     [ObservableProperty] private string _posBwdHint = "";
-    [ObservableProperty] private IBrush _posDeltaBrush = SolidColorBrush.Parse("#86EFAC");
-    [ObservableProperty] private IBrush _posGammaBrush = SolidColorBrush.Parse("#86EFAC");
-    [ObservableProperty] private IBrush _posThetaBrush = SolidColorBrush.Parse("#FCA5A5");
-    [ObservableProperty] private IBrush _posVegaBrush = SolidColorBrush.Parse("#86EFAC");
-    [ObservableProperty] private IBrush _posBwdBrush = SolidColorBrush.Parse("#86EFAC");
+    [ObservableProperty] private IBrush _posDeltaBrush = SolidColorBrush.Parse("#00FF7A");
+    [ObservableProperty] private IBrush _posGammaBrush = SolidColorBrush.Parse("#00FF7A");
+    [ObservableProperty] private IBrush _posThetaBrush = SolidColorBrush.Parse("#FF3B5C");
+    [ObservableProperty] private IBrush _posVegaBrush = SolidColorBrush.Parse("#00FF7A");
+    [ObservableProperty] private IBrush _posBwdBrush = SolidColorBrush.Parse("#00FF7A");
 
     public bool SideCall => Side == "call";
     public bool SidePut => Side == "put";
@@ -260,11 +260,11 @@ public partial class GrecheDocumentViewModel : Document
         PosBwdHint =
             $"Se l'S&P 500 si muove dell'1% (~€{spy * 0.01:0} di SPY), il portafoglio " +
             $"{(spyMove >= 0 ? "guadagna" : "perde")} ≈ €{Math.Abs(spyMove):N0}";
-        PosDeltaBrush = pd >= 0 ? SolidColorBrush.Parse("#86EFAC") : SolidColorBrush.Parse("#FCA5A5");
-        PosGammaBrush = pg >= 0 ? SolidColorBrush.Parse("#86EFAC") : SolidColorBrush.Parse("#FCA5A5");
-        PosThetaBrush = pt >= 0 ? SolidColorBrush.Parse("#86EFAC") : SolidColorBrush.Parse("#FCA5A5");
-        PosVegaBrush = pv >= 0 ? SolidColorBrush.Parse("#86EFAC") : SolidColorBrush.Parse("#FCA5A5");
-        PosBwdBrush = bwd >= 0 ? SolidColorBrush.Parse("#86EFAC") : SolidColorBrush.Parse("#FCA5A5");
+        PosDeltaBrush = pd >= 0 ? SolidColorBrush.Parse("#00FF7A") : SolidColorBrush.Parse("#FF3B5C");
+        PosGammaBrush = pg >= 0 ? SolidColorBrush.Parse("#00FF7A") : SolidColorBrush.Parse("#FF3B5C");
+        PosThetaBrush = pt >= 0 ? SolidColorBrush.Parse("#00FF7A") : SolidColorBrush.Parse("#FF3B5C");
+        PosVegaBrush = pv >= 0 ? SolidColorBrush.Parse("#00FF7A") : SolidColorBrush.Parse("#FF3B5C");
+        PosBwdBrush = bwd >= 0 ? SolidColorBrush.Parse("#00FF7A") : SolidColorBrush.Parse("#FF3B5C");
 
         foreach (var p in snap.Positions)
             PositionRows.Add(GrechePosRowViewModel.From(p));
@@ -315,9 +315,9 @@ public partial class GrechePosRowViewModel : ObservableObject
         QtyLabel = p.Qty.ToString(),
         DeltaLabel = p.DeltaDollar >= 0 ? $"+{p.DeltaDollar:0}" : $"{p.DeltaDollar:0}",
         BwdLabel = p.BetaWeightedDelta >= 0 ? $"+{p.BetaWeightedDelta:0}" : $"{p.BetaWeightedDelta:0}",
-        SideBrush = p.Side == "LONG" ? SolidColorBrush.Parse("#86EFAC") : SolidColorBrush.Parse("#FCA5A5"),
-        DeltaBrush = p.DeltaDollar >= 0 ? SolidColorBrush.Parse("#86EFAC") : SolidColorBrush.Parse("#FCA5A5"),
-        BwdBrush = p.BetaWeightedDelta >= 0 ? SolidColorBrush.Parse("#86EFAC") : SolidColorBrush.Parse("#FCA5A5"),
+        SideBrush = p.Side == "LONG" ? SolidColorBrush.Parse("#00FF7A") : SolidColorBrush.Parse("#FF3B5C"),
+        DeltaBrush = p.DeltaDollar >= 0 ? SolidColorBrush.Parse("#00FF7A") : SolidColorBrush.Parse("#FF3B5C"),
+        BwdBrush = p.BetaWeightedDelta >= 0 ? SolidColorBrush.Parse("#00FF7A") : SolidColorBrush.Parse("#FF3B5C"),
     };
 }
 
@@ -345,7 +345,7 @@ public partial class GrecheRowViewModel : ObservableObject
     public bool IsAtm { get; init; }
     public IBrush RowBg { get; init; } = SolidColorBrush.Parse("#100E14");
     public IBrush DeltaFg { get; init; } = SolidColorBrush.Parse("#E8DFE4");
-    public IBrush ThetaFg { get; init; } = SolidColorBrush.Parse("#FCA5A5");
+    public IBrush ThetaFg { get; init; } = SolidColorBrush.Parse("#FF3B5C");
     public IBrush DeltaHeatBg { get; init; } = Brushes.Transparent;
     public IBrush GammaHeatBg { get; init; } = Brushes.Transparent;
     public IBrush ThetaHeatBg { get; init; } = Brushes.Transparent;
@@ -405,8 +405,8 @@ public partial class GrecheRowViewModel : ObservableObject
             ShowVomma = vo,
             IsAtm = r.IsAtm,
             RowBg = r.IsAtm ? SolidColorBrush.Parse("#2A1E24") : SolidColorBrush.Parse("#100E14"),
-            DeltaFg = r.Delta >= 0 ? SolidColorBrush.Parse("#86EFAC") : SolidColorBrush.Parse("#FCA5A5"),
-            ThetaFg = SolidColorBrush.Parse("#FCA5A5"),
+            DeltaFg = r.Delta >= 0 ? SolidColorBrush.Parse("#00FF7A") : SolidColorBrush.Parse("#FF3B5C"),
+            ThetaFg = SolidColorBrush.Parse("#FF3B5C"),
             DeltaHeatBg = HeatBg("delta", r.Delta),
             GammaHeatBg = HeatBg("gamma", r.Gamma),
             ThetaHeatBg = HeatBg("theta", r.Theta),

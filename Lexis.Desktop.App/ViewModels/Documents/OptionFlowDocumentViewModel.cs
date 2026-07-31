@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using Avalonia.Media;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -8,6 +9,7 @@ using Dock.Model.Mvvm.Controls;
 using Lexis.Contracts.Market;
 using Lexis.Desktop.App.Services;
 
+
 namespace Lexis.Desktop.App.ViewModels.Documents;
 
 /// <summary>Option Flow desk — mirrors web renderOrder (filters · KPIs · feed · rail).</summary>
@@ -15,7 +17,10 @@ public partial class OptionFlowDocumentViewModel : Document, IDisposable
 {
     private readonly IFlowFeed _feed;
     private readonly List<FlowRowDto> _all = new();
+    private readonly HashSet<long> _seenIds = new();
+    private readonly Subject<FlowRowDto> _incoming = new();
     private IDisposable? _liveSub;
+    private IDisposable? _coalesceSub;
 
     public ObservableCollection<FlowRowItemViewModel> Rows { get; } = new();
     public ObservableCollection<string> TickerChips { get; } = new();
@@ -181,7 +186,12 @@ public partial class OptionFlowDocumentViewModel : Document, IDisposable
     private void Reload()
     {
         _all.Clear();
-        _all.AddRange(_feed.Seed(52));
+        _seenIds.Clear();
+        foreach (var row in _feed.Seed(52))
+        {
+            _all.Add(row);
+            _seenIds.Add(row.Id);
+        }
         ApplyFilter();
         StatusText = $"{_feed.SourceLabel} · {_all.Count} prints · Lee-Ready (Ask=buy · Bid=sell)";
         LiveBadge = _feed.IsApiLive ? "API LIVE" : "OPRA LIVE";
@@ -192,18 +202,31 @@ public partial class OptionFlowDocumentViewModel : Document, IDisposable
     {
         if (_liveSub is not null) return;
         IsLive = true;
-        _liveSub = _feed.StartLive(
-            onRow: row =>
+
+        // Coalesce bursts → one UI rebuild / Heavy interval (scheda §3.4).
+        _coalesceSub?.Dispose();
+        _coalesceSub = _incoming
+            .Buffer(UiFeed.Heavy)
+            .Where(batch => batch.Count > 0)
+            .Subscribe(batch => UiFeed.Post(() =>
             {
-                PostUi(() =>
+                foreach (var row in batch)
                 {
-                    // Dedup by id when API
-                    if (_all.Any(x => x.Id == row.Id)) return;
+                    if (!_seenIds.Add(row.Id))
+                        continue;
                     _all.Insert(0, row);
-                    while (_all.Count > 500) _all.RemoveAt(_all.Count - 1);
-                    ApplyFilter();
-                });
-            },
+                }
+                while (_all.Count > 400)
+                {
+                    var drop = _all[^1];
+                    _all.RemoveAt(_all.Count - 1);
+                    _seenIds.Remove(drop.Id);
+                }
+                ApplyFilter();
+            }));
+
+        _liveSub = _feed.StartLive(
+            onRow: row => _incoming.OnNext(row),
             isPaused: () => Paused);
     }
 
@@ -212,6 +235,8 @@ public partial class OptionFlowDocumentViewModel : Document, IDisposable
     {
         _liveSub?.Dispose();
         _liveSub = null;
+        _coalesceSub?.Dispose();
+        _coalesceSub = null;
         IsLive = false;
         Paused = true;
         LiveBadge = "OPRA PAUSA";
@@ -295,7 +320,7 @@ public partial class OptionFlowDocumentViewModel : Document, IDisposable
         SentimentLabel = scored == 0 ? (neut > 0 ? "NEUTRO" : "—")
             : bias > 0.18 ? "RIALZISTA" : bias < -0.18 ? "RIBASSISTA" : "NEUTRO";
         SentimentColor = scored == 0 ? "#D4A8B0"
-            : bias > 0.18 ? "#86EFAC" : bias < -0.18 ? "#FCA5A5" : "#D4A8B0";
+            : bias > 0.18 ? "#00FF7A" : bias < -0.18 ? "#FF3B5C" : "#D4A8B0";
         SentimentScore = $"{score}/100 · bias premio";
         OnPropertyChanged(nameof(SentimentBrush));
     }
@@ -331,12 +356,12 @@ public partial class OptionFlowDocumentViewModel : Document, IDisposable
         prem >= 1_000 ? $"${prem / 1_000.0:0.0}K" :
         $"${prem:N0}";
 
-    private static void PostUi(Action action) =>
-        Dispatcher.UIThread.Post(action, DispatcherPriority.Background);
+    private static void PostUi(Action action) => UiFeed.Post(action);
 
     public void Dispose()
     {
         StopLive();
+        _incoming.Dispose();
         GC.SuppressFinalize(this);
     }
 }
@@ -355,8 +380,8 @@ public partial class FlowRowItemViewModel : ObservableObject
     public string StrikeLabel => Dto.Strike.ToString("0.##");
     public string Cp => Dto.Type == "call" ? "C" : "P";
     public IBrush CpBrush => Dto.Type == "call"
-        ? SolidColorBrush.Parse("#86EFAC")
-        : SolidColorBrush.Parse("#FCA5A5");
+        ? SolidColorBrush.Parse("#00FF7A")
+        : SolidColorBrush.Parse("#FF3B5C");
     public string SizeOi => $"{Dto.Size:N0}/{Dto.Oi:N0}";
     public string PremLabel => Dto.Prem >= 1_000_000 ? $"${Dto.Prem / 1_000_000.0:0.00}M" :
         Dto.Prem >= 1_000 ? $"${Dto.Prem / 1_000.0:0.0}K" : $"${Dto.Prem:N0}";
@@ -375,8 +400,8 @@ public partial class FlowRowItemViewModel : ObservableObject
     };
     public IBrush RowAccent => Dto.Sentiment switch
     {
-        "bullish" => SolidColorBrush.Parse("#22C55E"),
-        "bearish" => SolidColorBrush.Parse("#EF4444"),
+        "bullish" => SolidColorBrush.Parse("#00FF7A"),
+        "bearish" => SolidColorBrush.Parse("#FF3B5C"),
         _ => SolidColorBrush.Parse("#D4A8B0"),
     };
     public IBrush RowBg => Dto.Golden
@@ -398,8 +423,8 @@ public partial class FlowRowItemViewModel : ObservableObject
     };
     public IBrush SideFg => Dto.Side switch
     {
-        "ASK" => SolidColorBrush.Parse("#86EFAC"),
-        "BID" => SolidColorBrush.Parse("#FCA5A5"),
+        "ASK" => SolidColorBrush.Parse("#00FF7A"),
+        "BID" => SolidColorBrush.Parse("#FF3B5C"),
         _ => SolidColorBrush.Parse("#D4A8B0"),
     };
 

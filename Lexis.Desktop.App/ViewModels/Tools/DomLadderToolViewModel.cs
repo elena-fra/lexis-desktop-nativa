@@ -134,9 +134,12 @@ public partial class DomLadderToolViewModel : Tool, IDisposable
     private void StartLive()
     {
         _live?.Dispose();
+        // Interval on thread pool → Sample → UI. RebuildLadder stays on UI thread.
         _live = Observable
-            .Interval(TimeSpan.FromMilliseconds(180))
-            .Subscribe(_ => PostUi(() =>
+            .Interval(TimeSpan.FromMilliseconds(180), System.Reactive.Concurrency.Scheduler.Default)
+            .Where(_ => !Paused)
+            .Sample(UiFeed.Frame)
+            .Subscribe(_ => UiFeed.Post(() =>
             {
                 if (Paused) return;
                 try
@@ -147,8 +150,8 @@ public partial class DomLadderToolViewModel : Tool, IDisposable
                         _ltqTicksLeft = 6;
                         LtqLabel = $"{trade.Size:0}";
                         LtqBrush = trade.Aggressor == AggressorSide.Buy
-                            ? SolidColorBrush.Parse("#86EFAC")
-                            : SolidColorBrush.Parse("#FCA5A5");
+                            ? SolidColorBrush.Parse("#00FF7A")
+                            : SolidColorBrush.Parse("#FF3B5C");
                         LastLabel = $"{FormatPx(trade.Price)} × {trade.Size:0} {(trade.Aggressor == AggressorSide.Buy ? "▲" : "▼")}";
                         TryFillWorking(trade);
                     }
@@ -162,7 +165,6 @@ public partial class DomLadderToolViewModel : Tool, IDisposable
                 }
                 catch (Exception ex)
                 {
-                    // Never let a mock tick kill the whole desktop process
                     StatusText = $"DOM mock hiccup · {ex.GetType().Name}";
                 }
             }));
@@ -298,8 +300,8 @@ public partial class DomLevelRowViewModel : ObservableObject
     [ObservableProperty] private bool _isInside;
     [ObservableProperty] private IBrush _rowBg = SolidColorBrush.Parse("#100E14");
     [ObservableProperty] private IBrush _priceFg = SolidColorBrush.Parse("#F3ECEF");
-    [ObservableProperty] private IBrush _bidFg = SolidColorBrush.Parse("#86EFAC");
-    [ObservableProperty] private IBrush _askFg = SolidColorBrush.Parse("#FCA5A5");
+    [ObservableProperty] private IBrush _bidFg = SolidColorBrush.Parse("#00FF7A");
+    [ObservableProperty] private IBrush _askFg = SolidColorBrush.Parse("#FF3B5C");
     [ObservableProperty] private IBrush _ltqFg = SolidColorBrush.Parse("#D4A8B0");
 
     public void Update(
@@ -332,9 +334,9 @@ public partial class DomLevelRowViewModel : ObservableObject
 
         LtqFlash = ltq > 0 ? ltq.ToString("0") : "";
         LtqFg = aggressor == AggressorSide.Buy
-            ? SolidColorBrush.Parse("#86EFAC")
+            ? SolidColorBrush.Parse("#00FF7A")
             : aggressor == AggressorSide.Sell
-                ? SolidColorBrush.Parse("#FCA5A5")
+                ? SolidColorBrush.Parse("#FF3B5C")
                 : SolidColorBrush.Parse("#D4A8B0");
 
         if (isLast)

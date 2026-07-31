@@ -117,13 +117,14 @@ public partial class TimeSalesToolViewModel : Tool, IDisposable
     {
         _live?.Dispose();
         _live = Observable
-            .Interval(TimeSpan.FromMilliseconds(140))
-            .Subscribe(_ => PostUi(() =>
+            .Interval(TimeSpan.FromMilliseconds(140), System.Reactive.Concurrency.Scheduler.Default)
+            .Where(_ => !Paused)
+            .Sample(UiFeed.Frame)
+            .Subscribe(_ => UiFeed.Post(() =>
             {
                 if (Paused) return;
                 try
                 {
-                    // burst 1–3 prints
                     var n = Random.Shared.Next(1, 4);
                     for (var i = 0; i < n; i++)
                         TryAdd(_feed.Next(), filter: true);
@@ -183,9 +184,9 @@ public partial class TimeSalesToolViewModel : Tool, IDisposable
         var delta = _feed.CumBuy - _feed.CumSell;
         DeltaLabel = delta >= 0 ? $"Δ +{FormatVol(delta)}" : $"Δ −{FormatVol(Math.Abs(delta))}";
         DeltaBrush = delta > 0
-            ? SolidColorBrush.Parse("#86EFAC")
+            ? SolidColorBrush.Parse("#00FF7A")
             : delta < 0
-                ? SolidColorBrush.Parse("#FCA5A5")
+                ? SolidColorBrush.Parse("#FF3B5C")
                 : SolidColorBrush.Parse("#D4A8B0");
         PrintsLabel = Rows.Count.ToString();
     }
@@ -227,7 +228,7 @@ public partial class TapeRowViewModel : ObservableObject
         var t = p.Trade;
         var buy = t.Aggressor == AggressorSide.Buy;
         var sell = t.Aggressor == AggressorSide.Sell;
-        var accent = buy ? "#86EFAC" : sell ? "#FCA5A5" : "#D4A8B0";
+        var accent = buy ? "#00FF7A" : sell ? "#FF3B5C" : "#D4A8B0";
         var bg = p.IsBlock
             ? "#1A1520"
             : buy ? "#0F1A14" : sell ? "#1A1212" : "#100E14";

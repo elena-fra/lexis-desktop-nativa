@@ -17,9 +17,9 @@ public partial class StatusToolViewModel : Tool, IDisposable
 
     public StatusToolViewModel(IpcTradeFeed? feed)
     {
-        Id = "Status";
+        Id = "status";
         Title = "Status / IPC";
-        CanClose = false;
+        CanClose = true;
 
         if (feed is null) return;
 

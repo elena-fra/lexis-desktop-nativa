@@ -27,7 +27,8 @@ public sealed class LexisApiClient : IDisposable
         _http = new HttpClient
         {
             BaseAddress = new Uri(settings.ApiBaseUrl.TrimEnd('/') + "/"),
-            Timeout = TimeSpan.FromSeconds(20),
+            // Keep short: startup used to block on this and freeze the desk.
+            Timeout = TimeSpan.FromSeconds(3),
         };
         _http.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
     }

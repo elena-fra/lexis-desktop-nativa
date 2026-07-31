@@ -1,13 +1,12 @@
 using Avalonia.Controls;
 using Lexis.Desktop.App.ViewModels.Documents;
 using LexisDesktop.Charts;
-using ScottPlot;
 
 namespace Lexis.Desktop.App.Views.Documents;
 
 public partial class ChartsDocumentView : UserControl
 {
-    private CandlestickChart? _chart;
+    private LexisTradingChart? _chart;
     private ChartsDocumentViewModel? _vm;
 
     public ChartsDocumentView()
@@ -20,12 +19,12 @@ public partial class ChartsDocumentView : UserControl
     private void WireVm()
     {
         if (_vm is not null)
-            _vm.ChartDataRequested -= OnChartDataRequested;
+            _vm.ChartRenderRequested -= OnChartRenderRequested;
 
         _vm = DataContext as ChartsDocumentViewModel;
         if (_vm is null) return;
 
-        _vm.ChartDataRequested += OnChartDataRequested;
+        _vm.ChartRenderRequested += OnChartRenderRequested;
         EnsureChart();
         _vm.NotifyAttached();
     }
@@ -35,16 +34,14 @@ public partial class ChartsDocumentView : UserControl
         if (_chart is not null) return;
         if (ChartHost is null) return;
 
-        _chart = new CandlestickChart();
+        _chart = new LexisTradingChart();
         ChartHost.Children.Clear();
-        ChartHost.Children.Add(_chart.PlotControl);
+        ChartHost.Children.Add(_chart.Root);
     }
 
-    private void OnChartDataRequested(IReadOnlyList<OHLC> data, string longHex, string shortHex)
+    private void OnChartRenderRequested(IReadOnlyList<OhlcvBar> bars, LexisChartOptions options)
     {
         EnsureChart();
-        if (_chart is null) return;
-        _chart.ApplyCandleColors(longHex, shortHex);
-        _chart.SetData(data);
+        _chart?.Render(bars, options);
     }
 }

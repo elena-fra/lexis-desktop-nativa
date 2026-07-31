@@ -9,7 +9,7 @@ public sealed class DeskSettings
     public string ApiBaseUrl { get; set; } = "http://127.0.0.1:3001";
     public string Username { get; set; } = "lexis-desktop";
     public string Password { get; set; } = "LexisDesk1!";
-    public bool PreferApi { get; set; } = true;
+    public bool PreferApi { get; set; } = false;
     public bool AutoRegister { get; set; } = true;
 
     public static string SettingsPath =>

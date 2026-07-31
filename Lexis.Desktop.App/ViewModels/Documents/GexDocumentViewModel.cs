@@ -48,7 +48,7 @@ public partial class GexDocumentViewModel : Document
     [ObservableProperty] private bool _methodHeston;
     [ObservableProperty] private bool _methodFdm;
     [ObservableProperty] private IBrush _netBrush = SolidColorBrush.Parse("#D4A8B0");
-    [ObservableProperty] private IBrush _deltaBrush = SolidColorBrush.Parse("#86EFAC");
+    [ObservableProperty] private IBrush _deltaBrush = SolidColorBrush.Parse("#00FF7A");
 
     public bool TabMacro => TabKey == "macro";
     public bool TabStruct => TabKey == "struct";
@@ -199,8 +199,8 @@ public partial class GexDocumentViewModel : Document
         NetLabel = FormatSignedEuroM(snap.Net);
         CallPutLabel = $"{snap.CallPutRatio:0} / {100 - snap.CallPutRatio:0}";
         Delta24Label = FormatSignedEuroM(snap.Delta24h);
-        NetBrush = snap.Net >= 0 ? SolidColorBrush.Parse("#86EFAC") : SolidColorBrush.Parse("#FCA5A5");
-        DeltaBrush = snap.Delta24h >= 0 ? SolidColorBrush.Parse("#86EFAC") : SolidColorBrush.Parse("#FCA5A5");
+        NetBrush = snap.Net >= 0 ? SolidColorBrush.Parse("#00FF7A") : SolidColorBrush.Parse("#FF3B5C");
+        DeltaBrush = snap.Delta24h >= 0 ? SolidColorBrush.Parse("#00FF7A") : SolidColorBrush.Parse("#FF3B5C");
         NetHint = snap.Net >= 0
             ? "long gamma · mercato pinnato"
             : "short gamma · mosse amplificate";
@@ -367,12 +367,12 @@ public partial class GexRowViewModel : ObservableObject
         else if (isCallWall)
         {
             bg = SolidColorBrush.Parse("#0F1A14");
-            strikeFg = SolidColorBrush.Parse("#86EFAC");
+            strikeFg = SolidColorBrush.Parse("#00FF7A");
         }
         else if (isPutWall)
         {
             bg = SolidColorBrush.Parse("#1A1212");
-            strikeFg = SolidColorBrush.Parse("#FCA5A5");
+            strikeFg = SolidColorBrush.Parse("#FF3B5C");
         }
         else if (isAtm)
         {
@@ -393,8 +393,8 @@ public partial class GexRowViewModel : ObservableObject
             RowBg = bg,
             StrikeFg = strikeFg,
             ValueFg = lvl.Value >= 0
-                ? SolidColorBrush.Parse("#86EFAC")
-                : SolidColorBrush.Parse("#FCA5A5"),
+                ? SolidColorBrush.Parse("#00FF7A")
+                : SolidColorBrush.Parse("#FF3B5C"),
         };
     }
 }

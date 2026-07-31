@@ -18,7 +18,7 @@ public static class DeskCatalog
         new("greche", "Greche", "Greeks matrix · Δ Γ Θ ν ρ + 2nd order (mock/API ready)", PanelKind.Document),
         new("chain", "Option Chain", "TOS-style chain", PanelKind.Document),
         new("order", "Option Flow", "Unusual options activity", PanelKind.Document),
-        new("graf", "Grafici", "Candlestick · LexisDesktop.Charts", PanelKind.Document),
+        new("graf", "Grafici", "Candele · TF · indicatori · LexisDesktop.Charts", PanelKind.Document),
         new("strategy", "Strategy Builder", "Leg builder", PanelKind.Document),
         new("backtest", "Backtest", "Strategy replay", PanelKind.Document),
         new("quant", "Quant & Algo", "Quant workspace", PanelKind.Document),

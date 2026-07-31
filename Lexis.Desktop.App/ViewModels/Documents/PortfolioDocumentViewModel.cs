@@ -41,11 +41,11 @@ public partial class PortfolioDocumentViewModel : Document
     [ObservableProperty] private double _marginUsedWidth = 120;
     [ObservableProperty] private double _marginFreeWidth = 180;
     [ObservableProperty] private string _equityPath = "M 0,70 L 640,70";
-    [ObservableProperty] private IBrush _equityBrush = SolidColorBrush.Parse("#86EFAC");
-    [ObservableProperty] private IBrush _openPlBrush = SolidColorBrush.Parse("#86EFAC");
-    [ObservableProperty] private IBrush _bpBrush = SolidColorBrush.Parse("#86EFAC");
-    [ObservableProperty] private IBrush _utilBrush = SolidColorBrush.Parse("#86EFAC");
-    [ObservableProperty] private IBrush _riskBrush = SolidColorBrush.Parse("#86EFAC");
+    [ObservableProperty] private IBrush _equityBrush = SolidColorBrush.Parse("#00FF7A");
+    [ObservableProperty] private IBrush _openPlBrush = SolidColorBrush.Parse("#00FF7A");
+    [ObservableProperty] private IBrush _bpBrush = SolidColorBrush.Parse("#00FF7A");
+    [ObservableProperty] private IBrush _utilBrush = SolidColorBrush.Parse("#00FF7A");
+    [ObservableProperty] private IBrush _riskBrush = SolidColorBrush.Parse("#00FF7A");
 
     public bool IsDemo => AccountType == "demo";
     public bool IsReal => AccountType == "real";
@@ -116,9 +116,9 @@ public partial class PortfolioDocumentViewModel : Document
         EquityBrush = Brush(snap.EquityChange);
         UtilBrush = snap.RiskTone switch
         {
-            "bad" => SolidColorBrush.Parse("#FCA5A5"),
+            "bad" => SolidColorBrush.Parse("#FF3B5C"),
             "warn" => SolidColorBrush.Parse("#D4A8B0"),
-            _ => SolidColorBrush.Parse("#86EFAC"),
+            _ => SolidColorBrush.Parse("#00FF7A"),
         };
         RiskBrush = UtilBrush;
 
@@ -160,7 +160,7 @@ public partial class PortfolioDocumentViewModel : Document
     }
 
     private static IBrush Brush(double v) =>
-        v >= 0 ? SolidColorBrush.Parse("#86EFAC") : SolidColorBrush.Parse("#FCA5A5");
+        v >= 0 ? SolidColorBrush.Parse("#00FF7A") : SolidColorBrush.Parse("#FF3B5C");
 
     private static string FormatEuro(double v) => $"€{v:N0}";
     private static string FormatSignedEuro(double v) =>
@@ -190,8 +190,8 @@ public partial class PortfolioExpoRowViewModel : ObservableObject
         DeltaDollarLabel = u.DeltaDollar >= 0 ? $"+€{u.DeltaDollar:N0}" : $"-€{Math.Abs(u.DeltaDollar):N0}",
         BwdLabel = u.BetaWeightedDelta >= 0 ? $"+{u.BetaWeightedDelta:0}" : $"{u.BetaWeightedDelta:0}",
         RiskPctLabel = $"{u.RiskPct:0}%",
-        DeltaBrush = u.DeltaDollar >= 0 ? SolidColorBrush.Parse("#86EFAC") : SolidColorBrush.Parse("#FCA5A5"),
-        BwdBrush = u.BetaWeightedDelta >= 0 ? SolidColorBrush.Parse("#86EFAC") : SolidColorBrush.Parse("#FCA5A5"),
+        DeltaBrush = u.DeltaDollar >= 0 ? SolidColorBrush.Parse("#00FF7A") : SolidColorBrush.Parse("#FF3B5C"),
+        BwdBrush = u.BetaWeightedDelta >= 0 ? SolidColorBrush.Parse("#00FF7A") : SolidColorBrush.Parse("#FF3B5C"),
     };
 }
 
@@ -204,7 +204,7 @@ public partial class PortfolioPosRowViewModel : ObservableObject
     public string DeltaLabel { get; init; } = "";
     public string BwdLabel { get; init; } = "";
     public IBrush SideBrush { get; init; } = SolidColorBrush.Parse("#D4A8B0");
-    public IBrush PlBrush { get; init; } = SolidColorBrush.Parse("#86EFAC");
+    public IBrush PlBrush { get; init; } = SolidColorBrush.Parse("#00FF7A");
 
     public static PortfolioPosRowViewModel From(PortfolioPositionDto p) => new()
     {
@@ -214,7 +214,7 @@ public partial class PortfolioPosRowViewModel : ObservableObject
         PlLabel = p.Pl >= 0 ? $"+€{p.Pl:N0}" : $"-€{Math.Abs(p.Pl):N0}",
         DeltaLabel = p.DeltaDollar >= 0 ? $"+{p.DeltaDollar:0}" : $"{p.DeltaDollar:0}",
         BwdLabel = p.BetaWeightedDelta >= 0 ? $"+{p.BetaWeightedDelta:0}" : $"{p.BetaWeightedDelta:0}",
-        SideBrush = p.Side == "LONG" ? SolidColorBrush.Parse("#86EFAC") : SolidColorBrush.Parse("#FCA5A5"),
-        PlBrush = p.Pl >= 0 ? SolidColorBrush.Parse("#86EFAC") : SolidColorBrush.Parse("#FCA5A5"),
+        SideBrush = p.Side == "LONG" ? SolidColorBrush.Parse("#00FF7A") : SolidColorBrush.Parse("#FF3B5C"),
+        PlBrush = p.Pl >= 0 ? SolidColorBrush.Parse("#00FF7A") : SolidColorBrush.Parse("#FF3B5C"),
     };
 }

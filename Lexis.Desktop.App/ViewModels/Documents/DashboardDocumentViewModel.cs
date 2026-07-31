@@ -45,12 +45,12 @@ public partial class DashboardDocumentViewModel : Document
     [ObservableProperty] private string _optionsValueLabel = "—";
     [ObservableProperty] private string _exposurePlLabel = "—";
     [ObservableProperty] private string _equityPath = "M 0,70 L 640,70";
-    [ObservableProperty] private IBrush _deltaBrush = SolidColorBrush.Parse("#86EFAC");
-    [ObservableProperty] private IBrush _openPlBrush = SolidColorBrush.Parse("#86EFAC");
-    [ObservableProperty] private IBrush _totalPlBrush = SolidColorBrush.Parse("#86EFAC");
+    [ObservableProperty] private IBrush _deltaBrush = SolidColorBrush.Parse("#00FF7A");
+    [ObservableProperty] private IBrush _openPlBrush = SolidColorBrush.Parse("#00FF7A");
+    [ObservableProperty] private IBrush _totalPlBrush = SolidColorBrush.Parse("#00FF7A");
     [ObservableProperty] private IBrush _winBrush = SolidColorBrush.Parse("#F3ECEF");
-    [ObservableProperty] private IBrush _chartBrush = SolidColorBrush.Parse("#86EFAC");
-    [ObservableProperty] private IBrush _exposurePlBrush = SolidColorBrush.Parse("#86EFAC");
+    [ObservableProperty] private IBrush _chartBrush = SolidColorBrush.Parse("#00FF7A");
+    [ObservableProperty] private IBrush _exposurePlBrush = SolidColorBrush.Parse("#00FF7A");
 
     public bool IsDemo => AccountType == "demo";
     public bool IsReal => AccountType == "real";
@@ -107,8 +107,8 @@ public partial class DashboardDocumentViewModel : Document
             ? $"● €0  0,00% · {snap.Range}"
             : $"{(snap.EquityChange >= 0 ? "▲ +" : "▼ −")}€{Math.Abs(snap.EquityChange):0}  {(snap.EquityChangePct >= 0 ? "+" : "")}{snap.EquityChangePct:0.00}% · {snap.Range}";
         DeltaBrush = snap.EquityChange >= 0
-            ? SolidColorBrush.Parse("#86EFAC")
-            : SolidColorBrush.Parse("#FCA5A5");
+            ? SolidColorBrush.Parse("#00FF7A")
+            : SolidColorBrush.Parse("#FF3B5C");
         ChartBrush = DeltaBrush;
 
         AccountNumber = snap.AccountNumber;
@@ -126,7 +126,7 @@ public partial class DashboardDocumentViewModel : Document
         TotalPlBrush = Brush(snap.TotalPl);
         WinRateLabel = $"{snap.WinRate:0}%";
         WinRateSub = $"{snap.Wins}/{snap.TradeCount} trade";
-        WinBrush = snap.WinRate >= 50 ? SolidColorBrush.Parse("#86EFAC") : SolidColorBrush.Parse("#F3ECEF");
+        WinBrush = snap.WinRate >= 50 ? SolidColorBrush.Parse("#00FF7A") : SolidColorBrush.Parse("#F3ECEF");
         CashLabel = FormatEuro(snap.Cash);
         FreeMarginLabel = FormatEuro(snap.FreeMargin);
         MarginSub = $"usato {FormatEuro(snap.MarginUsed)}";
@@ -181,7 +181,7 @@ public partial class DashboardDocumentViewModel : Document
     }
 
     private static IBrush Brush(double v) =>
-        v >= 0 ? SolidColorBrush.Parse("#86EFAC") : SolidColorBrush.Parse("#FCA5A5");
+        v >= 0 ? SolidColorBrush.Parse("#00FF7A") : SolidColorBrush.Parse("#FF3B5C");
 
     private static string FormatEuro(double v) => $"€{v:N0}";
     private static string FormatSignedEuro(double v) =>
@@ -196,7 +196,7 @@ public partial class DashboardTradeRowViewModel : ObservableObject
     public string PlLabel { get; init; } = "";
     public string Time { get; init; } = "";
     public IBrush SideBrush { get; init; } = SolidColorBrush.Parse("#D4A8B0");
-    public IBrush PlBrush { get; init; } = SolidColorBrush.Parse("#86EFAC");
+    public IBrush PlBrush { get; init; } = SolidColorBrush.Parse("#00FF7A");
 
     public static DashboardTradeRowViewModel From(DashboardTradeRow t) => new()
     {
@@ -206,10 +206,10 @@ public partial class DashboardTradeRowViewModel : ObservableObject
         PlLabel = t.Pl >= 0 ? $"+€{t.Pl:0}" : $"-€{Math.Abs(t.Pl):0}",
         Time = t.Time,
         SideBrush = t.Side == "LONG"
-            ? SolidColorBrush.Parse("#86EFAC")
-            : SolidColorBrush.Parse("#FCA5A5"),
+            ? SolidColorBrush.Parse("#00FF7A")
+            : SolidColorBrush.Parse("#FF3B5C"),
         PlBrush = t.Pl >= 0
-            ? SolidColorBrush.Parse("#86EFAC")
-            : SolidColorBrush.Parse("#FCA5A5"),
+            ? SolidColorBrush.Parse("#00FF7A")
+            : SolidColorBrush.Parse("#FF3B5C"),
     };
 }

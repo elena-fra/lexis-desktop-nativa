@@ -1,24 +1,25 @@
 ﻿using Avalonia;
 using System;
+using System.Runtime;
 
 namespace Lexis.Desktop.App;
 
 sealed class Program
 {
-    // Initialization code. Don't use any Avalonia, third-party APIs or any
-    // SynchronizationContext-reliant code before AppMain is called: things aren't initialized
-    // yet and stuff might break.
     [STAThread]
-    public static void Main(string[] args) => BuildAvaloniaApp()
-        .StartWithClassicDesktopLifetime(args);
+    public static void Main(string[] args)
+    {
+        // Prefer low-latency GC during desk lifetime (scheda §2.1).
+        try { GCSettings.LatencyMode = GCLatencyMode.SustainedLowLatency; }
+        catch { /* ignore on constrained runtimes */ }
 
-    // Avalonia configuration, don't remove; also used by visual designer.
+        BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
+    }
+
     public static AppBuilder BuildAvaloniaApp()
         => AppBuilder.Configure<App>()
             .UsePlatformDetect()
-#if DEBUG
-            .WithDeveloperTools()
-#endif
+            // DeveloperTools disabled: left the main window invisible/stuck here.
             .WithInterFont()
             .LogToTrace();
 }

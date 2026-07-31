@@ -24,10 +24,10 @@
       <Setter Property="Cursor" Value="Hand"/>
     </Style>
     <Style Selector="Button.quote.ask">
-      <Setter Property="Foreground" Value="#86EFAC"/>
+      <Setter Property="Foreground" Value="#00FF7A"/>
     </Style>
     <Style Selector="Button.quote.bid">
-      <Setter Property="Foreground" Value="#FCA5A5"/>
+      <Setter Property="Foreground" Value="#FF3B5C"/>
     </Style>
     <Style Selector="Button.quote:pointerover">
       <Setter Property="Background" Value="#243044"/>
@@ -41,10 +41,17 @@
       <Setter Property="HorizontalContentAlignment" Value="Center"/>
       <Setter Property="FontSize" Value="11"/>
       <Setter Property="Padding" Value="4,6"/>
+      <Setter Property="TextBlock.TextTrimming" Value="CharacterEllipsis"/>
+      <Setter Property="ClipToBounds" Value="True"/>
     </Style>
     <Style Selector="DataGridCell">
       <Setter Property="HorizontalContentAlignment" Value="Center"/>
       <Setter Property="Padding" Value="2,2"/>
+      <Setter Property="ClipToBounds" Value="True"/>
+    </Style>
+    <Style Selector="DataGridCell TextBlock">
+      <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+      <Setter Property="TextWrapping" Value="NoWrap"/>
     </Style>
     <Style Selector="DataGridRow">
       <Setter Property="Background" Value="{Binding RowBackground}"/>
@@ -193,10 +200,15 @@
 
     <Border Background="#0B1220" CornerRadius="6" Padding="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
       <DockPanel LastChildFill="True">
-        <Grid DockPanel.Dock="Top" Margin="8,8,8,4" ColumnDefinitions="*,100,*">
-          <TextBlock Text="CALLS" Foreground="#86EFAC" FontWeight="Bold" FontSize="12" HorizontalAlignment="Center"/>
-          <TextBlock Grid.Column="1" Text="STRIKE" Foreground="#93C5FD" FontWeight="Bold" FontSize="12" HorizontalAlignment="Center"/>
-          <TextBlock Grid.Column="2" Text="PUTS" Foreground="#FCA5A5" FontWeight="Bold" FontSize="12" HorizontalAlignment="Center"/>
+        <Grid DockPanel.Dock="Top" Margin="10,8,10,2" ColumnDefinitions="*,110,*">
+          <TextBlock Text="CALLS" Foreground="#00FF7A" FontWeight="Bold" FontSize="12"
+                     HorizontalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+          <Border Grid.Column="1" Background="#152238" CornerRadius="3" Padding="4,2" Margin="4,0">
+            <TextBlock Text="STRIKE" Foreground="#93C5FD" FontWeight="Bold" FontSize="12"
+                       HorizontalAlignment="Center"/>
+          </Border>
+          <TextBlock Grid.Column="2" Text="PUTS" Foreground="#FF3B5C" FontWeight="Bold" FontSize="12"
+                     HorizontalAlignment="Center" TextTrimming="CharacterEllipsis"/>
         </Grid>
 
         <DataGrid x:Name="ChainGrid"
@@ -211,19 +223,20 @@
                   Background="#0B1220"
                   Foreground="#E2E8F0"
                   BorderThickness="0"
-                  RowHeight="30"
-                  HorizontalScrollBarVisibility="Disabled"
+                  RowHeight="32"
+                  HorizontalScrollBarVisibility="Auto"
                   VerticalScrollBarVisibility="Auto">
           <DataGrid.Columns>
-            <DataGridTextColumn Header="OI" Binding="{Binding CallOi}" Width="*" MinWidth="48"/>
-            <DataGridTextColumn Header="Vol" Binding="{Binding CallVol}" Width="*" MinWidth="44"/>
-            <DataGridTextColumn Header="Vega" Binding="{Binding CallVega, StringFormat=F2}" Width="*" MinWidth="48"/>
-            <DataGridTextColumn Header="Θ" Binding="{Binding CallTheta, StringFormat=F2}" Width="*" MinWidth="44"/>
-            <DataGridTextColumn Header="Γ" Binding="{Binding CallGamma, StringFormat=F4}" Width="*" MinWidth="52"/>
-            <DataGridTextColumn Header="Δ" Binding="{Binding CallDelta, StringFormat=F3}" Width="*" MinWidth="48"/>
-            <DataGridTextColumn Header="IV" Binding="{Binding CallIv, StringFormat=F1}" Width="*" MinWidth="44"/>
+            <!-- Fixed pixel widths: star sizing crushed headers/strike when many columns were on -->
+            <DataGridTextColumn Header="OI" Binding="{Binding CallOi}" Width="56" MinWidth="52"/>
+            <DataGridTextColumn Header="Vol" Binding="{Binding CallVol}" Width="52" MinWidth="48"/>
+            <DataGridTextColumn Header="Vega" Binding="{Binding CallVega, StringFormat=F2}" Width="56" MinWidth="52"/>
+            <DataGridTextColumn Header="Θ" Binding="{Binding CallTheta, StringFormat=F2}" Width="52" MinWidth="48"/>
+            <DataGridTextColumn Header="Γ" Binding="{Binding CallGamma, StringFormat=F4}" Width="60" MinWidth="56"/>
+            <DataGridTextColumn Header="Δ" Binding="{Binding CallDelta, StringFormat=F3}" Width="56" MinWidth="52"/>
+            <DataGridTextColumn Header="IV" Binding="{Binding CallIv, StringFormat=F1}" Width="52" MinWidth="48"/>
 
-            <DataGridTemplateColumn Header="Bid" Width="1.2*" MinWidth="64">
+            <DataGridTemplateColumn Header="Bid" Width="72" MinWidth="68">
               <DataGridTemplateColumn.CellTemplate>
                 <DataTemplate>
                   <Button Classes="quote bid"
@@ -233,7 +246,7 @@
                 </DataTemplate>
               </DataGridTemplateColumn.CellTemplate>
             </DataGridTemplateColumn>
-            <DataGridTemplateColumn Header="Ask" Width="1.2*" MinWidth="64">
+            <DataGridTemplateColumn Header="Ask" Width="72" MinWidth="68">
               <DataGridTemplateColumn.CellTemplate>
                 <DataTemplate>
                   <Button Classes="quote ask"
@@ -244,10 +257,25 @@
               </DataGridTemplateColumn.CellTemplate>
             </DataGridTemplateColumn>
 
-            <DataGridTextColumn Header="Strike" Binding="{Binding Strike, StringFormat=F1}" Width="100" MinWidth="88"
-                                FontWeight="Bold"/>
+            <DataGridTemplateColumn Header="Strike" Width="110" MinWidth="100">
+              <DataGridTemplateColumn.CellTemplate>
+                <DataTemplate>
+                  <Border Background="#152238" Padding="6,0" ClipToBounds="True">
+                    <TextBlock Text="{Binding Strike, StringFormat=F1}"
+                               FontWeight="Bold"
+                               FontSize="13"
+                               FontFamily="Consolas,Courier New,monospace"
+                               Foreground="#E0F2FE"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               TextTrimming="CharacterEllipsis"
+                               TextWrapping="NoWrap"/>
+                  </Border>
+                </DataTemplate>
+              </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
 
-            <DataGridTemplateColumn Header="Bid" Width="1.2*" MinWidth="64">
+            <DataGridTemplateColumn Header="Bid" Width="72" MinWidth="68">
               <DataGridTemplateColumn.CellTemplate>
                 <DataTemplate>
                   <Button Classes="quote bid"
@@ -257,7 +285,7 @@
                 </DataTemplate>
               </DataGridTemplateColumn.CellTemplate>
             </DataGridTemplateColumn>
-            <DataGridTemplateColumn Header="Ask" Width="1.2*" MinWidth="64">
+            <DataGridTemplateColumn Header="Ask" Width="72" MinWidth="68">
               <DataGridTemplateColumn.CellTemplate>
                 <DataTemplate>
                   <Button Classes="quote ask"
@@ -268,13 +296,13 @@
               </DataGridTemplateColumn.CellTemplate>
             </DataGridTemplateColumn>
 
-            <DataGridTextColumn Header="IV" Binding="{Binding PutIv, StringFormat=F1}" Width="*" MinWidth="44"/>
-            <DataGridTextColumn Header="Δ" Binding="{Binding PutDelta, StringFormat=F3}" Width="*" MinWidth="48"/>
-            <DataGridTextColumn Header="Γ" Binding="{Binding PutGamma, StringFormat=F4}" Width="*" MinWidth="52"/>
-            <DataGridTextColumn Header="Θ" Binding="{Binding PutTheta, StringFormat=F2}" Width="*" MinWidth="44"/>
-            <DataGridTextColumn Header="Vega" Binding="{Binding PutVega, StringFormat=F2}" Width="*" MinWidth="48"/>
-            <DataGridTextColumn Header="Vol" Binding="{Binding PutVol}" Width="*" MinWidth="44"/>
-            <DataGridTextColumn Header="OI" Binding="{Binding PutOi}" Width="*" MinWidth="48"/>
+            <DataGridTextColumn Header="IV" Binding="{Binding PutIv, StringFormat=F1}" Width="52" MinWidth="48"/>
+            <DataGridTextColumn Header="Δ" Binding="{Binding PutDelta, StringFormat=F3}" Width="56" MinWidth="52"/>
+            <DataGridTextColumn Header="Γ" Binding="{Binding PutGamma, StringFormat=F4}" Width="60" MinWidth="56"/>
+            <DataGridTextColumn Header="Θ" Binding="{Binding PutTheta, StringFormat=F2}" Width="52" MinWidth="48"/>
+            <DataGridTextColumn Header="Vega" Binding="{Binding PutVega, StringFormat=F2}" Width="56" MinWidth="52"/>
+            <DataGridTextColumn Header="Vol" Binding="{Binding PutVol}" Width="52" MinWidth="48"/>
+            <DataGridTextColumn Header="OI" Binding="{Binding PutOi}" Width="56" MinWidth="52"/>
           </DataGrid.Columns>
         </DataGrid>
       </DockPanel>
